@@ -11,7 +11,7 @@ vector<guesser_move_t> generate_guesser_moves(
     vector<guesser_move_t> moves;
     string::const_iterator i;
     for (i = ALPHABET.begin(); i != ALPHABET.end(); ++i) {
-        if(find(h.guesses.begin(), h.guesses.end(), *i) != h.guesses.end()) {
+        if(find(h.guesses.begin(), h.guesses.end(), *i) == h.guesses.end()) {
             moves.push_back(*i);
         }
     }
@@ -27,7 +27,7 @@ vector<foe_move_t> generate_foe_moves(
     // XXX FIXME this is an entry-level method of generating moves
     // We figure out what all the consistent moves are and try them
     // in an arbitrary order.
-    vector<foe_move_t> moves;
+    set<foe_move_t> moves;
     char c = h.guesses.back();
     set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
@@ -35,7 +35,8 @@ vector<foe_move_t> generate_foe_moves(
         it = ctx.letter_word_to_pattern.find(make_pair(c, *i));
         assert(it != ctx.letter_word_to_pattern.end());
         index_t word_pattern_index = it->second;
-        moves.push_back(word_pattern_index);
+        moves.insert(word_pattern_index);
     }
-    return moves;
+    vector<foe_move_t> result(moves.begin(), moves.end());
+    return result;
 }

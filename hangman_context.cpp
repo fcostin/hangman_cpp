@@ -58,13 +58,15 @@ void make_letter_word_pattern_map(const vector<string> & words,
                 patterns.push_back(pattern);
                 miss_patterns.push_back(is_miss_pattern(pattern));
             }
-            char_word_to_pattern[make_pair(*j, word_index++)] = pattern_indices[pattern];
+            char_word_to_pattern[make_pair(*j, word_index)] = pattern_indices[pattern];
         }
+        word_index++;
     }
 }
 
 context_t make_hangman_context(const string & dictionary_file_name,
-        unsigned int word_length, unsigned int n_misses_for_loss) {
+        unsigned int word_length, unsigned int n_misses_for_loss,
+        unsigned int max_depth) {
 
     ifstream f(dictionary_file_name.c_str());
     assert(f);
@@ -72,6 +74,7 @@ context_t make_hangman_context(const string & dictionary_file_name,
     context_t ctx;
     ctx.word_length = word_length;
     ctx.n_misses_for_loss = n_misses_for_loss;
+    ctx.max_depth = max_depth;
 
     string word;
     while (f >> word) {

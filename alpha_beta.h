@@ -6,6 +6,7 @@
 #include "hangman_utils.h"
 #include "hangman_context.h"
 #include "assert.h"
+#include <iostream> // for debugging
 
 string make_key_for_game_state(const state_t & h);
 bool is_terminal_game_state(const context_t & ctx, const state_t & h);

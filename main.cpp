@@ -37,23 +37,25 @@ cache_t make_cache() {
 int main() {
     unsigned int word_length = 10;
     unsigned int n_misses_for_loss = 8;
+    unsigned int max_depth = 0;
 
     cout << "loading context..." << endl;
-    context_t ctx = make_hangman_context("words.txt", word_length, n_misses_for_loss);
-    cout << "loaded context" << endl;
+    context_t ctx = make_hangman_context("words.txt", word_length,
+            n_misses_for_loss, max_depth);
+    cout << "loaded context, got " << ctx.words.size() << " words, and " <<
+        ctx.patterns.size() << " patterns." << endl;
 
-    state_t h_zero = make_initial_state(make_all_word_indices(ctx), word_length);
-
-    cache_t cache = make_cache();
-
-    unsigned int max_depth = ALPHABET.size(); // full search
-
-    cout << "searching.." << endl;
-
-    score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
-            max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
-
-    cout << "outcome: " << outcome << endl;
-
+    for (unsigned int i = 0; i < ALPHABET.size(); ++i) {
+        max_depth = 2 * i;
+        cout << "Set max_depth := " << max_depth << endl;
+        ctx.max_depth = max_depth;
+        state_t h_zero = make_initial_state(make_all_word_indices(ctx), word_length);
+        cache_t cache = make_cache();
+        cout << "searching.." << endl;
+        score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
+                ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
+        cout << "outcome: " << outcome << endl;
+        cout << "n.b. move cache size: " << cache.move_cache.size() << endl;
+    }
     return 0;
 }

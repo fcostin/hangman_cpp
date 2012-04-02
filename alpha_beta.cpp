@@ -24,15 +24,29 @@ bool is_terminal_game_state(const context_t & ctx, const state_t & h) {
     }
 }
 
+void spam_debug_message(const string & who, unsigned int indent,
+        score_t alpha, score_t beta, const vector<char> & partial_word) {
+    for (unsigned int i = 0; i < indent; ++i) {
+        cout << " ";
+    }
+    vector<char>::const_iterator j;
+    for (j = partial_word.begin(); j != partial_word.end(); ++j) {
+        cout << *j;
+    }
+    cout << "; player = " << who << "; alpha = " << alpha << "; beta = " << beta << endl;
+}
+
 score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const state_t & h,
         unsigned int depth, score_t alpha, score_t beta) {
-
+    
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
     map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }
+
+    // spam_debug_message("G", ctx.max_depth - depth, alpha, beta, h.partial_word);
 
     score_t node_score;
 
@@ -50,7 +64,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
                 break;
             }
         }
-        node_score = beta;
+        node_score = alpha;
     }
     // stash the answer in the cache
     cache.move_cache[h_key] = node_score;
@@ -59,13 +73,15 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 
 score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
         unsigned int depth, score_t alpha, score_t beta) {
-
+    
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
     map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }
+
+    // spam_debug_message("F", ctx.max_depth - depth, alpha, beta, h.partial_word);
 
     score_t node_score;
 

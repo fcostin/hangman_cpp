@@ -8,6 +8,7 @@
 struct context_t {
     unsigned int word_length;
     unsigned int n_misses_for_loss;
+    unsigned int max_depth;
     vector<string> words;
     vector<string> patterns;
     vector<bool> miss_patterns;
@@ -24,6 +25,7 @@ void make_letter_word_pattern_map(const vector<string> & words,
         map<pair<char, index_t>, index_t> & char_word_to_pattern);
 
 context_t make_hangman_context(const string & dictionary_file_name,
-        unsigned int word_length, unsigned int n_misses_for_loss);
+        unsigned int word_length, unsigned int n_misses_for_loss,
+        unsigned int max_depth);
 
 #endif // HANGMAN_CONTEXT_H
