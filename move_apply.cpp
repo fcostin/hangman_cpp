@@ -1,7 +1,7 @@
 #include "move_apply.h"
 
 state_t apply_guesser_move(const context_t & ctx __attribute__ ((unused)),
-        const state_t & h, char chosen_c) {
+        const state_t & h, const char & chosen_c) {
     vector<char> next_guesses(h.guesses);
     next_guesses.push_back(chosen_c);
     state_t next_h(next_guesses, h.n_misses, h.live_word_indices,
@@ -10,7 +10,7 @@ state_t apply_guesser_move(const context_t & ctx __attribute__ ((unused)),
 }
 
 state_t apply_foe_move(const context_t & ctx, const state_t & h,
-        index_t chosen_pattern_index) {
+        const index_t & chosen_pattern_index) {
     /* arguments:
      *  ctx: game context (rules and word dictionary)
      *  h: current game state

@@ -7,8 +7,8 @@
 #include "assert.h"
 
 state_t apply_guesser_move(const context_t & ctx, const state_t & h,
-        char chosen_c);
+        const char & chosen_c);
 state_t apply_foe_move(const context_t & ctx, const state_t & h,
-        index_t chosen_pattern_index);
+        const index_t & chosen_pattern_index);
 
 #endif /* MOVE_APPLY_H */

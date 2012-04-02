@@ -57,7 +57,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     return node_score;
 }
 
-score_t optimal_foe_score(context_t & ctx, cache_t & cache, const state_t & h,
+score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
         unsigned int depth, score_t alpha, score_t beta) {
 
     // check if we've already got the answer in the cache

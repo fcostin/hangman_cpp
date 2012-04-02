@@ -4,7 +4,8 @@ all: a.out
 	./a.out
 .PHONY: all
 
-a.out: main.o hangman_context.o hangman_types.o alpha_beta.o evaluation.o move_apply.o
+a.out: main.o hangman_context.o hangman_types.o alpha_beta.o evaluation.o move_apply.o \
+		move_gen.o
 	g++ $(WARNING_FLAGS) $(OPT_FLAGS) -o $@ $^
 
 %.o:	%.cpp
