@@ -1,0 +1,46 @@
+----------------------------------------
+
+use iterative depth-first search
+
+train some dumb learning thing to be the heuristic function
+update it (retrain) periodically when there is enough new data
+
+weight examples proportional to mass of graph?
+    e.g. depth d has mass 2 ** -depth or something?
+
+set the WIN and LOSS values to +10 / -10 or something
+
+clamp the output of the learning thing to the range +1 / -1
+
+
+SIMPLE implementation of minimax search
+
+pieces:
+    need fast way to compute feasible moves for current game state
+    need heuristics to suggest ordering of attempting feasible moves
+
+-------------------------------------------
+
+
+data structures needed (precompute)
+
+    (1)     letter -> word -> pattern
+
+characterising the possible legal moves:
+
+    guesser:
+        any letter which has not been picked yet
+    foe:
+        take union of (1) over all live words with respect to guesser's letter
+        this can be done in O(n) for n live words
+
+how to apply move:
+    guesser:
+        tack onto vector of guessed letters
+    foe:
+        prune live words by checking p matches the pattern in (1)
+        this can be done in O(n) for n live words
+
+make the thing generic over arbitrary type store_t.
+score_t must be comparable so we can alpha / beta prune
+add a search depth
