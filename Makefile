@@ -1,9 +1,8 @@
 WARNING_FLAGS := -Wall -Wextra -Werror -pedantic -Wconversion
-OPT_FLAGS := -g
+OPT_FLAGS := -g -O3
 # ref : http://stackoverflow.com/questions/9577627/ubuntu-11-10-linking-perftools-library
 WITH_PROFILING := -Wl,--no-as-needed -lprofiler -Wl,-as-needed
 all: a.out
-	./a.out 3 1
 .PHONY: all
 
 a.out: main.o hangman_context.o hangman_types.o alpha_beta.o evaluation.o move_apply.o \
