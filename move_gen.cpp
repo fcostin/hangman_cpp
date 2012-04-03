@@ -33,6 +33,18 @@ vector<foe_move_t> generate_foe_moves(
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
         moves.insert(ctx.get_pattern_id(c, *i));
     }
-    vector<foe_move_t> result(moves.begin(), moves.end());
+    // XXX heuristic : try all of the "no" moves first
+    vector<foe_move_t> result;
+    unordered_set<foe_move_t>::const_iterator j;
+    for (j = moves.begin(); j != moves.end(); ++j) {
+        if (ctx.miss_patterns[*j]) {
+            result.push_back(*j);
+        }
+    }
+    for (j = moves.begin(); j != moves.end(); ++j) {
+        if (!(ctx.miss_patterns[*j])) {
+            result.push_back(*j);
+        }
+    }
     return result;
 }
