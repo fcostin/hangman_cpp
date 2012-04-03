@@ -38,7 +38,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
-    map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
+    unordered_map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }
@@ -73,7 +73,7 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
-    map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
+    unordered_map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }

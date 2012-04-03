@@ -2,9 +2,10 @@
 #define HANGMAN_TYPES_H
 
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <sstream>
 #include <fstream>
@@ -16,22 +17,25 @@ typedef double score_t;
 typedef char guesser_move_t;
 typedef index_t foe_move_t;
 
-class state_t {
-public:
+struct state_t {
     vector<char> guesses;
     unsigned int n_misses;
-    set<index_t> live_word_indices;
+    unordered_set<index_t> live_word_indices;
     vector<char> partial_word;
 
-    state_t(const vector<char> & guesses, int n_misses,
-            const set<index_t> & live_word_indices,
-            const vector<char> & partial_word);
+    inline state_t(const vector<char> & guesses,
+            const unsigned int & n_misses,
+            const unordered_set<index_t> & live_word_indices,
+            const vector<char> & partial_word) {
+        this->guesses = guesses;
+        this->n_misses = n_misses;
+        this->live_word_indices = live_word_indices;
+        this->partial_word = partial_word;
+    }
 };
 
-class cache_t {
-public:
-    map<string, score_t> move_cache;
-    cache_t(const map<string, score_t> & move_cache);
+struct cache_t {
+    unordered_map<string, score_t> move_cache;
 };
 
 #endif /* HANGMAN_TYPES_H */

@@ -27,9 +27,9 @@ vector<foe_move_t> generate_foe_moves(
     // XXX FIXME this is an entry-level method of generating moves
     // We figure out what all the consistent moves are and try them
     // in an arbitrary order.
-    set<foe_move_t> moves;
+    unordered_set<foe_move_t> moves;
     char c = h.guesses.back();
-    set<index_t>::const_iterator i;
+    unordered_set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
         moves.insert(ctx.get_pattern_id(c, *i));
     }

@@ -22,8 +22,8 @@ state_t apply_foe_move(const context_t & ctx, const state_t & h,
 
     //  live_word_indices -- rebuild the live word indices
     char c = h.guesses.back();
-    set<index_t> next_live_word_indices;
-    set<index_t>::const_iterator i;
+    unordered_set<index_t> next_live_word_indices;
+    unordered_set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
         if (ctx.get_pattern_id(c, *i) == chosen_pattern_index) {
             next_live_word_indices.insert(*i);

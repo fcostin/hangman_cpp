@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-state_t make_initial_state(const set<index_t> & live_word_indices,
+state_t make_initial_state(const unordered_set<index_t> & live_word_indices,
         unsigned int word_length) {
     vector<char> guesses;
     int n_misses = 0;
@@ -18,19 +18,13 @@ state_t make_initial_state(const set<index_t> & live_word_indices,
     return h;
 }
 
-set<index_t> make_all_word_indices(const context_t & context) {
+unordered_set<index_t> make_all_word_indices(const context_t & context) {
     index_t i = 0;
     vector<string>::const_iterator it;
-    set<index_t> result;
+    unordered_set<index_t> result;
     for (it = context.words.begin(); it != context.words.end(); ++it) {
         result.insert(i++);
     }
-    return result;
-}
-
-cache_t make_cache() {
-    map<string, score_t> move_cache;
-    cache_t result(move_cache);
     return result;
 }
 
@@ -57,7 +51,7 @@ int main(int n_args, char ** args) {
         ctx.patterns.size() << " patterns." << endl;
 
     state_t h_zero = make_initial_state(make_all_word_indices(ctx), word_length);
-    cache_t cache = make_cache();
+    cache_t cache;
     cout << "# searching.." << endl;
     score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
             ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
