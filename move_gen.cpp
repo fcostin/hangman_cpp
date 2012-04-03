@@ -31,11 +31,7 @@ vector<foe_move_t> generate_foe_moves(
     char c = h.guesses.back();
     set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
-        map<pair<char, index_t>, index_t>::const_iterator it;
-        it = ctx.letter_word_to_pattern.find(make_pair(c, *i));
-        assert(it != ctx.letter_word_to_pattern.end());
-        index_t word_pattern_index = it->second;
-        moves.insert(word_pattern_index);
+        moves.insert(ctx.get_pattern_id(c, *i));
     }
     vector<foe_move_t> result(moves.begin(), moves.end());
     return result;

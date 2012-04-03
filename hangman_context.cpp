@@ -1,5 +1,6 @@
 #include "hangman_context.h"
 
+
 string make_pattern(char c, const string & word) {
     string pattern;
     pattern.push_back(c);
@@ -25,12 +26,13 @@ void make_letter_word_pattern_map(const vector<string> & words,
         vector<string> & patterns,
         vector<bool> & miss_patterns,
         map<string, index_t> & pattern_indices,
-        map<pair<char, index_t>, index_t> & char_word_to_pattern) {
+        map<pair<char, index_t>, index_t> & letter_word_to_pattern,
+        vector<vector<index_t> > & vec_letter_word_to_pattern) {
     /* input arguments:
      *  words : vector of words
      * output arguments:
      *  pattern_indices : map of unique patterns to pattern indices
-     *  char_word_to_pattern : map of (char, word_index) pairs to pattern indices
+     *  letter_word_to_pattern : map of (char, word_index) pairs to pattern indices
      * note:
      *  the words are implicitly indexed by their order in the input vector.
      */
@@ -49,6 +51,13 @@ void make_letter_word_pattern_map(const vector<string> & words,
 
     index_t pattern_index = 0;
 
+
+    for (j = ALPHABET.begin(); j != ALPHABET.end(); ++j) {
+        vector<index_t> v;
+        v.resize(words.size());
+        vec_letter_word_to_pattern.push_back(v);
+    }
+
     for (i = words.begin(); i != words.end(); ++i) {
         for (j = ALPHABET.begin(); j != ALPHABET.end(); ++j) {
             string pattern = make_pattern(*j, *i);
@@ -58,7 +67,10 @@ void make_letter_word_pattern_map(const vector<string> & words,
                 patterns.push_back(pattern);
                 miss_patterns.push_back(is_miss_pattern(pattern));
             }
-            char_word_to_pattern[make_pair(*j, word_index)] = pattern_indices[pattern];
+            letter_word_to_pattern[make_pair(*j, word_index)] = pattern_indices[pattern];
+
+            index_t c_id = (index_t)(*j - 'a');
+            vec_letter_word_to_pattern[c_id][word_index] = pattern_indices[pattern];
         }
         word_index++;
     }
@@ -83,6 +95,7 @@ context_t make_hangman_context(const string & dictionary_file_name,
         }
     }
     make_letter_word_pattern_map(ctx.words, ctx.patterns, ctx.miss_patterns,
-            ctx.pattern_indices, ctx.letter_word_to_pattern);
+            ctx.pattern_indices, ctx.letter_word_to_pattern,
+            ctx.vec_letter_word_to_pattern);
     return ctx;
 }

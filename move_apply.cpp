@@ -25,11 +25,7 @@ state_t apply_foe_move(const context_t & ctx, const state_t & h,
     set<index_t> next_live_word_indices;
     set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
-        map<pair<char, index_t>, index_t>::const_iterator it;
-        it = ctx.letter_word_to_pattern.find(make_pair(c, *i));
-        assert(it != ctx.letter_word_to_pattern.end());
-        index_t word_pattern_index = it->second;
-        if (word_pattern_index == chosen_pattern_index) {
+        if (ctx.get_pattern_id(c, *i) == chosen_pattern_index) {
             next_live_word_indices.insert(*i);
         }
     }
