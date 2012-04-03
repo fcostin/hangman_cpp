@@ -25,14 +25,11 @@ bool is_terminal_game_state(const context_t & ctx, const state_t & h) {
 }
 
 void spam_debug_message(const string & who, unsigned int indent,
-        score_t alpha, score_t beta, const vector<char> & partial_word) {
+        score_t alpha, score_t beta, const string & h_key) {
     for (unsigned int i = 0; i < indent; ++i) {
         cout << " ";
     }
-    vector<char>::const_iterator j;
-    for (j = partial_word.begin(); j != partial_word.end(); ++j) {
-        cout << *j;
-    }
+    cout << h_key;
     cout << "; player = " << who << "; alpha = " << alpha << "; beta = " << beta << endl;
 }
 
@@ -46,7 +43,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         return cache_it->second;
     }
 
-    // spam_debug_message("G", ctx.max_depth - depth, alpha, beta, h.partial_word);
+    // spam_debug_message("G", ctx.max_depth - depth, alpha, beta, h_key);
 
     score_t node_score;
 
@@ -81,7 +78,7 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         return cache_it->second;
     }
 
-    // spam_debug_message("F", ctx.max_depth - depth, alpha, beta, h.partial_word);
+    // spam_debug_message("F", ctx.max_depth - depth, alpha, beta, h_key);
 
     score_t node_score;
 

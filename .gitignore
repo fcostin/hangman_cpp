@@ -3,3 +3,5 @@
 *.out
 # ignore the data file
 words.txt
+# ignore any profiling output
+*.prof
