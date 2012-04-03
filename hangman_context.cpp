@@ -26,13 +26,12 @@ void make_letter_word_pattern_map(const vector<string> & words,
         vector<string> & patterns,
         vector<bool> & miss_patterns,
         map<string, index_t> & pattern_indices,
-        map<pair<char, index_t>, index_t> & letter_word_to_pattern,
         vector<vector<index_t> > & vec_letter_word_to_pattern) {
     /* input arguments:
      *  words : vector of words
      * output arguments:
      *  pattern_indices : map of unique patterns to pattern indices
-     *  letter_word_to_pattern : map of (char, word_index) pairs to pattern indices
+     *  vec_letter_word_to_pattern : vec {char index -> vec {word index -> pattern index }}
      * note:
      *  the words are implicitly indexed by their order in the input vector.
      */
@@ -67,8 +66,6 @@ void make_letter_word_pattern_map(const vector<string> & words,
                 patterns.push_back(pattern);
                 miss_patterns.push_back(is_miss_pattern(pattern));
             }
-            letter_word_to_pattern[make_pair(*j, word_index)] = pattern_indices[pattern];
-
             index_t c_id = (index_t)(*j - 'a');
             vec_letter_word_to_pattern[c_id][word_index] = pattern_indices[pattern];
         }
@@ -95,7 +92,6 @@ context_t make_hangman_context(const string & dictionary_file_name,
         }
     }
     make_letter_word_pattern_map(ctx.words, ctx.patterns, ctx.miss_patterns,
-            ctx.pattern_indices, ctx.letter_word_to_pattern,
-            ctx.vec_letter_word_to_pattern);
+            ctx.pattern_indices, ctx.vec_letter_word_to_pattern);
     return ctx;
 }
