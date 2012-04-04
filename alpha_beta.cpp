@@ -7,8 +7,10 @@ inline string make_key_for_game_state(const state_t & h) {
     sort(guesses.begin(), guesses.end());
 
     string key;
-    key.push_back(h.last_guess);
-    key.push_back(';');
+    if (h.last_guess != (char)0) {
+        key.push_back(h.last_guess);
+    }
+    key.push_back('|');
     key.append(guesses.begin(), guesses.end());
     key.push_back(';');
     key.append(h.partial_word.begin(), h.partial_word.end());
@@ -30,7 +32,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 
     pair<bool, score_t> term = terminal_game_state(ctx, h);
     if (term.first) {
-        return term.second;
+        node_score = term.second;
     } else {
         vector<guesser_move_t> moves = generate_guesser_moves(ctx, h, h_key, depth);
         vector<guesser_move_t>::iterator i;
@@ -45,6 +47,13 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         }
         node_score = alpha;
     }
+
+    /*
+    if (node_score == SCORE_GUESSER_WIN) {
+        cout << "alice: " << h_key << "|" << "alice wins" << endl;
+    } else {
+        cout << "alice: " << h_key << "|" << "alice loses" << endl;
+    }*/
     // stash the answer in the cache
     cache.move_cache[h_key] = node_score;
     return node_score;
@@ -64,7 +73,7 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
 
     pair<bool, score_t> term = terminal_game_state(ctx, h);
     if (term.first) {
-        return term.second;
+        node_score = term.second;
     } else {
         vector<foe_move_t> moves = generate_foe_moves(ctx, h, h_key, depth);
         vector<foe_move_t>::iterator i;
@@ -79,6 +88,13 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         }
         node_score = beta;
     }
+    
+    /*
+    if (node_score == SCORE_GUESSER_WIN) {
+        cout << "bob: " << h_key << "|" << "alice wins" << endl;
+    } else {
+        cout << "bob: " << h_key << "|" << "alice loses" << endl;
+    }*/
     // stash the answer in the cache
     cache.move_cache[h_key] = node_score;
     return node_score;
