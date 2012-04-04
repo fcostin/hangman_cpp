@@ -1,9 +1,10 @@
 #ifndef HANGMAN_CONTEXT_H
 #define HANGMAN_CONTEXT_H
 
+#include "assert.h"
 #include "hangman_types.h"
 #include "hangman_constants.h"
-#include "assert.h"
+#include "exclusion.h"
 
 struct context_t {
     unsigned int word_length;
@@ -14,6 +15,7 @@ struct context_t {
     vector<bool> miss_patterns;
     map<string, index_t> pattern_indices;
     vector<vector<index_t> > vec_letter_word_to_pattern;
+    vector<bool> letter_table;
 
     inline index_t get_pattern_id(const char & c, const index_t & word_id) const {
         index_t c_index = (index_t)(c - 'a');

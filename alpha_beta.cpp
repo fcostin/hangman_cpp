@@ -1,6 +1,6 @@
 #include "alpha_beta.h"
 
-string make_key_for_game_state(const state_t & h) {
+inline string make_key_for_game_state(const state_t & h) {
     // return string key for game state structure
     // (for caching ...)
     vector<char> guesses = vector<char>(h.guesses);
@@ -10,27 +10,8 @@ string make_key_for_game_state(const state_t & h) {
     key.append(guesses.begin(), guesses.end());
     key.push_back(';');
     key.append(h.partial_word.begin(), h.partial_word.end());
-    key.push_back(';');
-    key.append(to_string(h.n_misses));
+    key.append(small_int_to_string(h.n_misses));
     return key;
-}
-
-bool is_terminal_game_state(const context_t & ctx, const state_t & h) {
-    if (h.n_misses >= ctx.n_misses_for_loss) {
-        return true;
-    } else {
-        assert(h.live_word_indices.size() > 0);
-        return h.live_word_indices.size() == 1;
-    }
-}
-
-void spam_debug_message(const string & who, unsigned int indent,
-        score_t alpha, score_t beta, const string & h_key) {
-    for (unsigned int i = 0; i < indent; ++i) {
-        cout << " ";
-    }
-    cout << h_key;
-    cout << "; player = " << who << "; alpha = " << alpha << "; beta = " << beta << endl;
 }
 
 score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const state_t & h,
@@ -43,12 +24,11 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         return cache_it->second;
     }
 
-    // spam_debug_message("G", ctx.max_depth - depth, alpha, beta, h_key);
-
     score_t node_score;
 
-    if ((depth == 0) or is_terminal_game_state(ctx, h)) {
-        node_score = evaluate_game_state(ctx, h);
+    pair<bool, score_t> term = terminal_game_state(ctx, h);
+    if (term.first) {
+        return term.second;
     } else {
         vector<guesser_move_t> moves = generate_guesser_moves(ctx, h, h_key, depth);
         vector<guesser_move_t>::iterator i;
@@ -78,12 +58,11 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         return cache_it->second;
     }
 
-    // spam_debug_message("F", ctx.max_depth - depth, alpha, beta, h_key);
-
     score_t node_score;
 
-    if ((depth == 0) or is_terminal_game_state(ctx, h)) {
-        node_score = evaluate_game_state(ctx, h);
+    pair<bool, score_t> term = terminal_game_state(ctx, h);
+    if (term.first) {
+        return term.second;
     } else {
         vector<foe_move_t> moves = generate_foe_moves(ctx, h, h_key, depth);
         vector<foe_move_t>::iterator i;

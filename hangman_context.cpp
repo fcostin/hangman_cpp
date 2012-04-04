@@ -93,5 +93,7 @@ context_t make_hangman_context(const string & dictionary_file_name,
     }
     make_letter_word_pattern_map(ctx.words, ctx.patterns, ctx.miss_patterns,
             ctx.pattern_indices, ctx.vec_letter_word_to_pattern);
+
+    ctx.letter_table = make_letter_table(ctx.words);
     return ctx;
 }

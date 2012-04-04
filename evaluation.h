@@ -5,6 +5,6 @@
 #include "assert.h"
 #include "math.h"
 
-score_t evaluate_game_state(const context_t & ctx, const state_t & h);
+pair<bool, score_t> terminal_game_state(const context_t & ctx, const state_t & h);
 
 #endif /* EVALUATION_H */
