@@ -7,6 +7,8 @@ inline string make_key_for_game_state(const state_t & h) {
     sort(guesses.begin(), guesses.end());
 
     string key;
+    key.push_back(h.last_guess);
+    key.push_back(';');
     key.append(guesses.begin(), guesses.end());
     key.push_back(';');
     key.append(h.partial_word.begin(), h.partial_word.end());

@@ -14,7 +14,7 @@ state_t make_initial_state(const unordered_set<index_t> & live_word_indices,
     while (word_length-- > 0) {
         partial_word.push_back('_');
     }
-    state_t h(guesses, n_misses, live_word_indices, partial_word);
+    state_t h(guesses, n_misses, live_word_indices, partial_word, (char)0);
     return h;
 }
 

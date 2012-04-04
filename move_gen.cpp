@@ -28,7 +28,7 @@ vector<foe_move_t> generate_foe_moves(
     // We figure out what all the consistent moves are and try them
     // in an arbitrary order.
     unordered_set<foe_move_t> moves;
-    char c = h.guesses.back();
+    char c = h.last_guess;
     unordered_set<index_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
         moves.insert(ctx.get_pattern_id(c, *i));

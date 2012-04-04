@@ -22,15 +22,18 @@ struct state_t {
     unsigned int n_misses;
     unordered_set<index_t> live_word_indices;
     vector<char> partial_word;
+    char last_guess;
 
     inline state_t(const vector<char> & guesses,
             const unsigned int & n_misses,
             const unordered_set<index_t> & live_word_indices,
-            const vector<char> & partial_word) {
+            const vector<char> & partial_word,
+            const char & last_guess) {
         this->guesses = guesses;
         this->n_misses = n_misses;
         this->live_word_indices = live_word_indices;
         this->partial_word = partial_word;
+        this->last_guess = last_guess;
     }
 };
 
