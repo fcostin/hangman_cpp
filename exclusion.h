@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "hangman_constants.h"
+#include "hangman_types.h"
 
 using namespace std;
 
@@ -36,6 +37,12 @@ unsigned int lower_bound_on_remaining_words(const vector<bool> & table,
         const unsigned int & n_words,
         const unordered_set<unsigned int> & word_indices,
         const vector<unsigned int> & unused_letter_indices,
+        const unsigned int & lives);
+
+unsigned int upper_bound_on_remaining_words(
+        const unordered_set<unsigned int> & word_indices,
+        const vector<unsigned int> & unused_letter_indices,
+        const context_t & ctx,
         const unsigned int & lives);
 
 #endif /* EXCLUSION_H */

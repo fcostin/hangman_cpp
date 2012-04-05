@@ -105,3 +105,98 @@ unsigned int lower_bound_on_remaining_words(const vector<bool> & table,
         return 0;
     }
 }
+
+unsigned int upper_bound_on_remaining_words(
+        const unordered_set<unsigned int> & word_indices,
+        const vector<unsigned int> & unused_letter_indices,
+        const context_t & ctx,
+        const unsigned int & lives) {
+    /*
+    figure out the subset C of letters that Alice may still guess
+    for each letter c in C:
+        find the c-pattern which occurs the most often in the live words
+        store its frequency f_c
+
+    how to get a (reasonably tight?) upper bound on the number of
+    live words remaining after alice makes d moves?
+
+    when patterns are revealed the subset of words featuring that pattern
+    is intersected onto the set of live words.
+
+    many patterns are mutually exclusive (but we drop that constraint to
+    get an upper bound)
+
+    therefore we can take the min of the d largest frequencies f_c
+
+    actually, we can do better:
+
+    every time alice guesses, she reduces the number of candidate words by at least 1
+    this means we need only look at the unique frequencies f_c and can pick the
+    d-th largest one of those for our upper bound (if there arent d unique values
+    one... then we pick the k-th one, where 1 <= k < d, and subtract (d - k) from it.)
+
+    if this value is less than 2 then Alice wins (since that means either there
+    is only one word left, or that there are 0 words left (ie Alice has demonstrated
+    that Bob is cheating...)
+     */
+
+
+    // lpc aka 'letter_index -> pattern_index -> count (frequency)'
+    vector<unordered_map<index_t, unsigned int> > lpc;
+    lpc.resize(ALPHABET_SIZE);
+
+    vector<unsigned int>::const_iterator i;
+    for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
+        unordered_set<unsigned int>::const_iterator j;
+        for (j = word_indices.begin(); j != word_indices.end(); ++j) {
+            index_t pattern_id = ctx.vec_letter_word_to_pattern[*i][*j];
+            if (lpc[*i].count(pattern_id)) {
+                lpc[*i][pattern_id] += 1;
+            } else {
+                lpc[*i][pattern_id] = 1;
+            }
+        }
+    }
+
+    // form set of (max_p lcp[c][p]) for each unused letter c
+    unordered_set<unsigned int> lc_max_unique;
+    for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
+        unordered_map<index_t, unsigned int>::const_iterator j;
+        unsigned int acc = 0;
+        for (j = lpc[*i].begin(); j != lpc[*i].end(); ++j) {
+            acc = (j->second > acc) ? j->second : acc;
+        }
+        if (acc > 0) {
+            lc_max_unique.insert(acc);
+        }
+    }
+    // compute the sum of the n largest elements of lc_max_unique, where
+    // n = min_alice_moves = lives - 1. If there are not n largest elements
+    // then sum what elements exist and subtract (n - num_elements) from
+    // the result. in both cases this yields an upper bound on the maximum
+    // number of words remaining (it is probably not particularly tight).
+    vector<unsigned int> lc_max_sorted(lc_max_unique.begin(), lc_max_unique.end());
+    sort(lc_max_sorted.begin(), lc_max_sorted.end());
+
+    unsigned int n_unique = lc_max_sorted.size();
+    assert(n_unique > 0);
+    assert(lives > 0);
+    unsigned int min_alice_moves = lives - 1;
+
+    unsigned int upper_bound = 0;
+    if (min_alice_moves < n_unique) {
+        vector<unsigned int>::const_iterator k;
+        for (k = (lc_max_sorted.end() - min_alice_moves); k != lc_max_sorted.end(); ++k) {
+            upper_bound += *k;
+        }
+    } else {
+        vector<unsigned int>::const_iterator k;
+        for (k = lc_max_sorted.begin(); k != lc_max_sorted.end(); ++k) {
+            upper_bound += *k;
+        }
+        unsigned int defect = min_alice_moves - n_unique;
+        assert(upper_bound >= defect);
+        upper_bound -= defect;
+    }
+    return upper_bound;
+}

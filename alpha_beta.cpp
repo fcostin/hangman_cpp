@@ -30,8 +30,9 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 
     score_t node_score;
 
-    pair<bool, score_t> term = terminal_game_state(ctx, h);
-    if (term.first) {
+    pair<eval_result_t, score_t> term = terminal_game_state(ctx, h);
+    cache.log_eval_result(term.first, depth);
+    if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
         vector<guesser_move_t> moves = generate_guesser_moves(ctx, h, h_key, depth);
@@ -71,8 +72,9 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
 
     score_t node_score;
 
-    pair<bool, score_t> term = terminal_game_state(ctx, h);
-    if (term.first) {
+    pair<eval_result_t, score_t> term = terminal_game_state(ctx, h);
+    cache.log_eval_result(term.first, depth);
+    if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
         vector<foe_move_t> moves = generate_foe_moves(ctx, h, h_key, depth);

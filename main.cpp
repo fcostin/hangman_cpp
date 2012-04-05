@@ -56,6 +56,6 @@ int main(int n_args, char ** args) {
     score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
             ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
     cout << "@ outcome: " << outcome << endl;
-    cout << "# n.b. move cache size: " << cache.move_cache.size() << endl;
+    cache.dump_summary(cout);
     return 0;
 }

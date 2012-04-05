@@ -10,7 +10,7 @@
 
 inline string make_key_for_game_state(const state_t & h);
 
-pair<bool, score_t> terminal_game_state(const context_t & ctx, const state_t & h);
+pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const state_t & h);
 
 vector<guesser_move_t> generate_guesser_moves(const context_t & ctx, const state_t & h,
         const string & h_key, unsigned int depth);

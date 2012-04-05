@@ -1,8 +1,15 @@
 #ifndef HANGMAN_CONSTANTS_H
 #define HANGMAN_CONSTANTS_H
 
-#include "hangman_types.h"
 #include "math.h"
+#include <string>
+
+using namespace std;
+
+typedef unsigned int index_t;
+typedef double score_t;
+typedef char guesser_move_t;
+typedef index_t foe_move_t;
 
 const string ALPHABET("etaonrishdlfcmugypwbvkxjqz");
 const unsigned int ALPHABET_SIZE = 26;

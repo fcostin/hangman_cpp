@@ -1,46 +1,55 @@
 #include "evaluation.h"
 
-pair<bool, score_t> terminal_game_state(const context_t & ctx, const state_t & h) {
-    // base case of guesser loss
+pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const state_t & h) {
+    // [BASE-LOSS]: Alice loses
     if (h.n_misses >= ctx.n_misses_for_loss) {
-        return make_pair(true, SCORE_GUESSER_LOSE);
+        return make_pair(EVAL_RESULT_BASE_LOSS, SCORE_GUESSER_LOSE);
     }
-    // base case of guesser win
+    // [BASE-WIN]: Alice wins
     unsigned int n_words = h.live_word_indices.size();
     assert(n_words > 0);
     if (n_words == 1) {
-        return make_pair(true, SCORE_GUESSER_WIN);
+        return make_pair(EVAL_RESULT_BASE_WIN, SCORE_GUESSER_WIN);
     }
-    
-    // compute upper bound on number of possible words left with the
-    // extremely loose bound: Alice (guessing player) can always
-    // eliminate at least 1 possible word with each move she makes.
-    // XXX TODO tighten this estimate (idea: count pattern frequencies
-    // for patterns consistent with the live word set (these frequencies
-    // are all at least one). sum the d smallest frequencies, where
-    // d = (lives - 1). at least this many words must be excluded no
-    // matter what Bob does (in reality the number is probably higher
-    // since there are constraints preventing some combinations of
-    // constraints (e.g. letter constraints and overlap constraints
-    // for starters this would be similar to the lower bound used below).
 
+    // [UPPER-BOUND-CHEAP]: Compute loose upper bound on
+    // number of possible words left at end of this game.
+    // This can detect some wins for Alice cheaply.
+    // (justification: Alice can always eliminate at
+    // least 1 possible word per guess, and she has at least
+    // lives - 1 guesses left, and she wins if the number of
+    // words is less than 2)
     unsigned int lives = ctx.n_misses_for_loss - h.n_misses;
     if (h.live_word_indices.size() <= lives) {
-        return make_pair(true, SCORE_GUESSER_WIN);
+        return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
     }
 
-    // compute lower bound on the number of possible words left if the
-    // foe claims no subsequent guessed letters are in the unknown word
-    // (this is able to a detect guesser loss scenario early in some
-    // circumstances)
+    // needed for following two estimates
     vector<unsigned int> unused_letter_indices = make_unused_letter_indices(
             ctx.letter_table, ctx.words.size(), h.guesses, h.live_word_indices);
+
+    // [LOWER-BOUND-EXPENSIVE]: compute lower bound on the number of
+    // possible words left if the foe claims no subsequent guessed
+    // letters are in the unknown word (this is able to a detect
+    // guesser loss scenario early in some circumstances)
     unsigned int lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
             ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
     if (lower_bound > 1) {
-        return make_pair(true, SCORE_GUESSER_LOSE);
+        return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
     }
 
-    // we haven't detected a terminal game state - return false
-    return make_pair(false, SCORE_WHATEVER);
+    // [UPPER-BOUND-EXPENSIVE]: compute another upper bound on number
+    // of possible words left at end of game. This is more expensive
+    // as we count patterns. Hopefully it results in a tighter bound
+    // than UPPER-BOUND-CHEAP
+    // {{ XXX this appears to be very rarely triggered -- perhaps it is
+    // not worth the expense per evaluation. }}
+    unsigned int upper_bound = upper_bound_on_remaining_words(
+            h.live_word_indices, unused_letter_indices, ctx, lives);
+    if (upper_bound < 2) {
+        return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);
+    }
+
+    // [NOT-TERMINAL] we haven't detected a terminal game state
+    return make_pair(EVAL_RESULT_NOT_TERMINAL, SCORE_WHATEVER);
 }
