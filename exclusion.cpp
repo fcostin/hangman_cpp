@@ -48,7 +48,7 @@ vector<unsigned int> make_unused_letter_indices(const vector<bool> & table,
     /* return indices of unused letters that appear in 1 or more words */
     vector<unsigned int> unused_letter_indices;
     for (unsigned int i = 0; i < ALPHABET_SIZE; ++i) {
-        if (find(used_letters.begin(), used_letters.end(), ALPHABET[i]) != used_letters.end()) {
+        if (find(used_letters.begin(), used_letters.end(), index_to_letter(i)) != used_letters.end()) {
             continue;
         }
         unordered_set<unsigned int>::const_iterator j;
