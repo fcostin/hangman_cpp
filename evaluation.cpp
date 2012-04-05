@@ -34,8 +34,17 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
     // guesser loss scenario early in some circumstances)
     unsigned int lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
             ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
+    // debug debug debug! vvvv
+    bool dbg_bound_success = lower_bound > 1;
+    cout << "$prune: success=" << dbg_bound_success << " n_words=" << n_words <<
+        " lives=" << lives << " n_guesses=" << h.guesses.size() <<
+        " n_unused_letters=" << unused_letter_indices.size() <<
+        " word_length=" << ctx.word_length << " n_misses_for_loss=" <<
+        ctx.n_misses_for_loss << endl;
+    // debug debug debug ^^^
     if (lower_bound > 1) {
         return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
+    } else {
     }
 
     // [NOT-TERMINAL] we haven't detected a terminal game state
