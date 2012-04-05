@@ -49,6 +49,10 @@ int main(int n_args, char ** args) {
             n_misses_for_loss, max_depth);
     cout << "# loaded context, got " << ctx.words.size() << " words, and " <<
         ctx.patterns.size() << " patterns." << endl;
+    if (!ctx.words.size()) {
+        cerr << "There are no words there! Aborting." << endl;
+        return 1;
+    }
 
     state_t h_zero = make_initial_state(make_all_word_indices(ctx), word_length);
     cache_t cache;
