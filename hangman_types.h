@@ -131,8 +131,8 @@ struct cache_t {
         dump_stats(out, stat_base_win);
         out << "\tstat_upper_bound_cheap ";
         dump_stats(out, stat_upper_bound_cheap);
-        out << "\tstat_upper_bound_expensive ";
-        dump_stats(out, stat_upper_bound_expensive);
+        // out << "\tstat_upper_bound_expensive ";
+        // dump_stats(out, stat_upper_bound_expensive);
         out << "\tstat_lower_bound_expensive ";
         dump_stats(out, stat_lower_bound_expensive);
     }

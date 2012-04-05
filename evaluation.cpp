@@ -38,18 +38,6 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
         return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
     }
 
-    // [UPPER-BOUND-EXPENSIVE]: compute another upper bound on number
-    // of possible words left at end of game. This is more expensive
-    // as we count patterns. Hopefully it results in a tighter bound
-    // than UPPER-BOUND-CHEAP
-    // {{ XXX this appears to be very rarely triggered -- perhaps it is
-    // not worth the expense per evaluation. }}
-    unsigned int upper_bound = upper_bound_on_remaining_words(
-            h.live_word_indices, unused_letter_indices, ctx, lives);
-    if (upper_bound < 2) {
-        return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);
-    }
-
     // [NOT-TERMINAL] we haven't detected a terminal game state
     return make_pair(EVAL_RESULT_NOT_TERMINAL, SCORE_WHATEVER);
 }
