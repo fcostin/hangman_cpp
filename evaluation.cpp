@@ -28,23 +28,25 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
     vector<unsigned int> unused_letter_indices = make_unused_letter_indices(
             ctx.letter_table, ctx.words.size(), h.guesses, h.live_word_indices);
 
-    // [LOWER-BOUND-EXPENSIVE]: compute lower bound on the number of
-    // possible words left if the foe claims no subsequent guessed
-    // letters are in the unknown word (this is able to a detect
-    // guesser loss scenario early in some circumstances)
-    unsigned int lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
-            ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
-    // debug debug debug! vvvv
-    bool dbg_bound_success = lower_bound > 1;
-    cout << "$prune: success=" << dbg_bound_success << " n_words=" << n_words <<
-        " lives=" << lives << " n_guesses=" << h.guesses.size() <<
-        " n_unused_letters=" << unused_letter_indices.size() <<
-        " word_length=" << ctx.word_length << " n_misses_for_loss=" <<
-        ctx.n_misses_for_loss << endl;
-    // debug debug debug ^^^
-    if (lower_bound > 1) {
-        return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
-    } else {
+    // only compute the expensive lower bound if a random forest classifier
+    // predicts that it will succeed.
+    int forest_clf_inputs[6];
+    forest_clf_inputs[0] = n_words;
+    forest_clf_inputs[1] = lives;
+    forest_clf_inputs[2] = h.guesses.size();
+    forest_clf_inputs[3] = unused_letter_indices.size();
+    forest_clf_inputs[4] = ctx.word_length;
+    forest_clf_inputs[5] = ctx.n_misses_for_loss;
+    if (forest_clf(forest_clf_inputs)) {
+        // [LOWER-BOUND-EXPENSIVE]: compute lower bound on the number of
+        // possible words left if the foe claims no subsequent guessed
+        // letters are in the unknown word (this is able to a detect
+        // guesser loss scenario early in some circumstances)
+        unsigned int lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
+                ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
+        if (lower_bound > 1) {
+            return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
+        }
     }
 
     // [NOT-TERMINAL] we haven't detected a terminal game state
