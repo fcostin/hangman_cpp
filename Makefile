@@ -17,7 +17,7 @@ all: a.out
 
 a.out: main.o hangman_context.o alpha_beta.o evaluation.o move_apply.o \
 		move_gen.o exclusion.o forest.o
-	$(CPPC) $(CPPC_FLAGS) $(WITH_PROFILING) -o $@ $^
+	$(CPPC) $(CPPC_FLAGS) -o $@ $^
 
 %.o:	%.cpp
 	$(CPPC) $(CPPC_FLAGS) -c $^

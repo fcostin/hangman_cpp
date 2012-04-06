@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\title{A lower bound on the number of possible words remaining in adversarial hangman}
+\author{rfc}
+
+\begin{document}
+\maketitle
+\abstract{Alice and Bob play a game of hangman, where Alice attempts to infer Bob's
+unknown word. We derive a lower bound on the number of possible words remaining,
+which can be used detect scenarios in which Alice cannot possibly win. The bound is
+reasonably cheap to compute (compared to minimax search) and hence can be evaluated
+during a full minimax search of the game tree to prune branches of the search
+space in some circumstances. The bound follows from two relaxations of the problem,
+both of which favour Alice: we suppose that Bob executes a fixed and possibly
+non-optimal strategy, and take a very optimistic view on the number of possible
+words that Alice is able to rule out every move.
+
+\section{Introduction}
+A game of hangman is played between Alice and Bob. Alice attempts to infer Bob's unknown word by making queries of the form `is the letter \verb+k+ in the word?'. Bob responds by either stating that the letter is not in the word, or he reveals all locations of the letter in the word. Suppose that Bob is very tricky and refuses to commit to a particular word until forced to by the information he has revealed to Alice. Suppose also that Alice knows that Bob will play in this manner.
+
+Alice and Bob agree on a dictionary $\mathbb{W}$ of words. Every word $w \in \mathbb{W}$ has length $n$. Alice is allotted $d+1$ `lives', where $d \geq 0$ is an integer. Alice loses a life if she guesses a letter that is not in Bob's unknown word. If at any stage Alice has $0$ lives remaining then Alice loses the game. Otherwise, when Alice has at least one life remaining, if there is only one possible candidate for Bob's unknown word, then Bob loses the game.
+
+Consider the scenario where Bob's strategy is fixed but Alice's strategy is arbitrary. In particular, the two players interact in the following way, while Alice has 1 or more lives remaining:
+\begin{enumerate}
+    \item Alice asks Bob: `does your word contain the letter $\alpha \in \{\verb+a+, \ldots, \verb+z+\}$?'
+    \item Bob always responds: `No', and Alice loses a life.
+\end{enumerate}
+Bob's fixed strategy of always replying `No' is not always a legal move - this is the case if all of the possible words still in play contain the guessed letter $\alpha$. However, if it turns out that Bob's moves are legal, and there are at least two possible candidates for Bob's unknown word in play after Alice makes $\alpha$ queries, then Bob wins the game.
+
+Figuring out the exact number of words in place after $d$ queries by Alice if Alice plays optimally with respect to Bob's fixed strategy appears like a potentially difficult thing to evaluate. But, if we are able to find a lower bound on the number of possible words after $d$ queries which is cheap to compute, then provided it is a reasonably tight bound, we will be able to use it to detect some scenarios where Alice cannot possibly win.
+
+\section{Notation}
+
+\begin{itemize}
+    \item Let Alice have $d + 1$ lives, where $d > 0$ is an integer.
+    \item Let $\mathbb{A} = \{a, \ldots, z\}$ be the set of the usual twenty-six letters.
+    \item Let $A \subseteq \mathbb{A}$ denote a subset of $d$ letters, i.e. $|A| = d$.
+    \item Let $\mathbb{W}$ denote the dictionary of words of length $n$.
+    \item Let $W^{(0)} \subseteq \mathbb{W}$ denote the set of possible candidates for
+        Bob's unknown word when Alice has not made any guesses.
+    \item Let $W^{(i)} \subseteq W^{(i-1)}$ denote the set of possible candidates for
+        Bob's unknown word when Alice has made $i$ guesses, for $1 \leq i \leq d$.
+    \item For each $\alpha \in \mathbb{A}$, let $\chi_{\alpha} \subseteq W^{(0)}$ denote
+        the subset of words from $W^{(0)}$ that contain the letter $\alpha$. Let
+        $\chi_{\alpha}^c = W^{(0)} \setminus \chi_{\alpha}$
+\end{itemize}
+
+\section{Setting the stage}
+
+Suppose Alice makes $d$ moves by guessing $d$ letters from $\mathbb{A}$.
+Note that this is the maximum number of moves she can make without losing by running out of
+lives. Without loss of generality the $d$ letters are unique (guessing the same letter twice is sub-optimal play) so these letters can be represented by a subset $A \subset \mathbb{A}$ of size $|A| = d$. The set of possible words remaining is then
+\begin{equation}
+\label{wordsLeft}
+W^{(d)} = \cap_{\alpha \in A} \chi_{\alpha}^c \;,
+\end{equation}
+that is, $W^{(d)}$ is the largest subset of words of $W^{(0)}$ that contain none of the letters in $A$. If Alice plays optimally then she chooses $A$ to minimise the number of possible words. Define $L$ to be the resulting minimal number of words:
+\begin{equation}
+\label{minWordsLeft}
+L = \min_{A \subseteq \mathbb{A}; \; |A| = d} \; | \cap_{\alpha \in A} \; \chi_{\alpha}^c |
+\end{equation}
+If $L > 1$ then Alice has lost the game to Bob's fixed strategy no matter how well she plays, since $A$ ranges over all combinations of moves. This demonstrates that the fixed strategy for Bob is a winning one, and is optimal. For the complementary case of $L \geq 1$ we cannot conclude anything about the result of the game if both players play optimally, it merely demonstrates that Bob's fixed strategy is either a (possibly optimal) losing strategy or involves making an illegal move.
+
+Computing the exact value of $L$ is most likely impractical. We now derive a lower bound
+$L^{\prime}$ for $L$ that is easier to compute. In cases where $L^{\prime} > 1$,
+then $L \geq L^{\prime} > 1$, so we can conclude that Alice loses.
+
+\section{Lower bound}
+
+Since $\chi_{\alpha} \subseteq W^{(0)}$ for each letter $\alpha \in A$, we make the
+trivial observation that
+\begin{align*}
+W^{(0)} & = \left( \cup_{\alpha \in A} \; \chi_{\alpha} \right) \; \cup \;
+\left(\cup_{\alpha \in A} \; \chi_{\alpha} \right)^c \\
+& = \left( \cup_{\alpha \in A} \; \chi_{\alpha} \right) \; \cup \; \left(
+\cap_{\alpha \in A} \; \chi_{\alpha}^c \right) \;,
+\end{align*}
+that is, every word $w \in W^{(0)}$ contains either one or more of the letters $\alpha \in A$, or none of the letters. From this we get a simple lower bound on the number of words containing none of the letters in $A$:
+\begin{equation}
+\label{estimate}
+|W^{(0)}| - \sum_{\alpha \in A} \; | \chi_{\alpha} | \leq |
+\cap_{\alpha \in A} \; \chi_{\alpha}^c | \; ,
+\end{equation}
+with equality attained in the case where the $\chi_{\alpha}$ are mutually disjoint.
+Plugging this lower bound of estimate~\eqref{estimate} into equation~\eqref{minWordsLeft}
+gives a lower bound $L^{\prime}$ for $L$:
+\begin{equation}
+L^{\prime} := \min_{A \subseteq \mathbb{A}; \; |A| = d} \left( |W^{(0)}| - \sum_{\alpha \in A} \; | \chi_{\alpha} | \right)
+\end{equation}
+
+Finally, note that the minimum is obtained when $A$ is defined by picking the $d$ letters $\alpha_1, \ldots, \alpha_d$ from $\mathbb{A}$ with the largest corresponding values of $|\chi_{\alpha_1}|, \ldots, |\chi_{\alpha_d}|$. This gives a simple algorithm for computing $L^{\prime}$ : for each letter $\alpha \in \mathbb{A}$, count how many words in $W^{(0)}$ contain $\alpha$, then sum the $d$ largest counts and subtract the result from the total number of candidate words $|W^{(0)}$. This takes at most $O(|W^{(0)}|)$ operations, provided both the size of the alphabet $|\mathbb{A}|$ and the length $n$ of the words is small. We make no claim that this algorithm is particularly efficient, but it is quick enough to be useful in practice.
+
+\end{document}

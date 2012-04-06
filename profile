@@ -6,7 +6,7 @@ def main():
     arg_string = ' '.join(sys.argv[1:])
     params = {
         'CPUPROFILE' : './hangman.prof',
-        'CPUPROFILE_FREQUENCY' : 1000,
+        'CPUPROFILE_FREQUENCY' : 100,
     }
     param_string = ' '.join(['%s=%s' % (str(k), str(v)) for (k, v) in params.iteritems()])
     command = 'env %s ./a.out %s' % (param_string, arg_string)

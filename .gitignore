@@ -5,3 +5,6 @@
 words.txt
 # ignore any profiling output
 *.prof
+doc/*.log
+doc/*.aux
+doc/*.pdf

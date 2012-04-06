@@ -1,0 +1,43 @@
+Bob wants to keep as many words live (consistent with revealed information) as he can
+
+suppose alice has d + 1 lives
+therefore alice can make at least d moves
+
+for each move alice proposes a letter
+this forces Bob to exclude some of the live words
+
+Bob wants to exclude as few words as possible
+
+if Alice picks the letter c Bob chooses to reveal
+a c-pattern. he wants to reveal the c-pattern corresponding
+to the largest number of words (so that the largest number of
+words remain live).
+
+so, what can we do?
+
+figure out the subset C of letters that Alice may still guess
+for each letter c in C:
+    find the c-pattern which occurs the most often in the live words
+    store its frequency f_c
+
+how to get a (reasonably tight?) upper bound on the number of
+live words remaining after alice makes d moves?
+
+when patterns are revealed the subset of words featuring that pattern
+is intersected onto the set of live words.
+
+many patterns are mutually exclusive (but we drop that constraint to
+get an upper bound)
+
+therefore we can take the min of the d largest frequencies f_c
+
+if this value is less than 2 then Alice wins (since there is only one word)
+
+is this upper bound tight enough to be useful or is it too relaxed?
+
+actually, we can do better:
+
+every time alice guesses, she reduces the number of candidate words by at least 1
+this means we need only look at the unique frequencies f_c and can pick the
+d-th largest one of those for our upper bound (if there arent d unique values
+one... then we pick the k-th one, where 1 <= k < d, and subtract (d - k) from it.)

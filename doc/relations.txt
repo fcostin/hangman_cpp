@@ -1,0 +1,48 @@
+hash keys have the form:
+
+    guessed letters (ordered string) ; partial word ; bad guesses
+
+
+    guessed letters are a set
+        there is a partial ordering on these
+
+    partial words
+        there is a partial ordering on these (more or less specific)
+
+    bad guesses
+        there is an ordering on these (int from finite set of ints)
+
+    
+    write each entry as
+
+        (L, P, B)
+
+        
+        (L, P, B) <= (M, Q, C) iff
+
+            L >= M and P >= Q and B <= C
+
+        where
+
+            L >= M means the guessed letters L are a superset of the guessed letters M
+            P >= Q means the revealed letter pattern P is a specialisation of the
+                    revealed letter pattern Q
+
+            B <= C means the number of bad guesses B is less than the number of bad
+                    guesses C
+
+        if there is strict inequality in one or more of the three inequalities then
+        the scenario (L, P, B) is strictly more favourable to the guessing player
+        than the scenario (M, Q, C)
+
+   which is more favourable to the guesser? L <= M or L >= M?
+        
+        L >= M applies more constraints to the possible set of live words
+        therefore it is more favourable.
+
+
+suppose we need to evaluate the score of position H for player P.
+
+    suppose we have already evaluated position H' which is an equally or less
+    favourable position for P. Then score(H') is a lower bound for score(H),
+    (lower in the sense of inferior from the perspective of player P)
