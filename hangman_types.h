@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "hangman_constants.h"
+#include "lru_cache.h"
 
 using namespace std;
 
@@ -63,7 +64,7 @@ enum eval_result_t {
 };
 
 struct cache_t {
-    unordered_map<string, score_t> move_cache;
+    lru_cache_t<string, score_t> move_cache;
 
     vector<size_t> stat_not_terminal;
     vector<size_t> stat_base_loss;
@@ -72,7 +73,7 @@ struct cache_t {
     vector<size_t> stat_lower_bound_expensive;
     vector<size_t> stat_upper_bound_expensive;
         
-    inline cache_t() {
+    cache_t() : move_cache(MOVE_CACHE_SIZE) {
         stat_not_terminal.resize(1 + (ALPHABET_SIZE * 2), 0);
         stat_base_loss.resize(1 + (ALPHABET_SIZE * 2), 0);
         stat_base_win.resize(1 + (ALPHABET_SIZE * 2), 0);

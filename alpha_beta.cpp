@@ -23,7 +23,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
-    unordered_map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
+    lru_cache_t<string, score_t>::item_list_t::const_iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }
@@ -56,7 +56,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         cout << "alice: " << h_key << "|" << "alice loses" << endl;
     }*/
     // stash the answer in the cache
-    cache.move_cache[h_key] = node_score;
+    cache.move_cache.insert(h_key, node_score);
     return node_score;
 }
 
@@ -65,7 +65,7 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
-    unordered_map<string, score_t>::iterator cache_it = cache.move_cache.find(h_key);
+    lru_cache_t<string, score_t>::item_list_t::const_iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
         return cache_it->second;
     }
@@ -98,6 +98,6 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         cout << "bob: " << h_key << "|" << "alice loses" << endl;
     }*/
     // stash the answer in the cache
-    cache.move_cache[h_key] = node_score;
+    cache.move_cache.insert(h_key, node_score);
     return node_score;
 }

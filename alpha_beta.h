@@ -1,12 +1,13 @@
 #ifndef ALPHA_BETA_H
 #define ALPHA_BETA_H
 
+#include "assert.h"
+#include <iostream> // for debugging
+
 #include "hangman_types.h"
 #include "hangman_constants.h"
 #include "hangman_utils.h"
 #include "hangman_context.h"
-#include "assert.h"
-#include <iostream> // for debugging
 
 inline string make_key_for_game_state(const state_t & h);
 

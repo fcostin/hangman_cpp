@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const size_t MOVE_CACHE_SIZE = (size_t)10000000;
+
 typedef double score_t;
 
 const string ALPHABET("etaonrishdlfcmugypwbvkxjqz");
