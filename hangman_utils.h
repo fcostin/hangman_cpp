@@ -10,7 +10,7 @@ inline string to_string(const T& t) {
     return ss.str();
 }
 
-inline const char * small_int_to_string(const unsigned int & i) {
+inline const char * small_int_to_string(const size_t & i) {
     switch(i) {
         case 0:
             return "0";

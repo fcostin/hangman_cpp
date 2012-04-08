@@ -25,8 +25,8 @@ bool is_miss_pattern(const string & pattern) {
 void make_letter_word_pattern_map(const vector<string> & words,
         vector<string> & patterns,
         vector<bool> & miss_patterns,
-        map<string, index_t> & pattern_indices,
-        vector<vector<index_t> > & vec_letter_word_to_pattern) {
+        map<string, size_t> & pattern_indices,
+        vector<vector<size_t> > & vec_letter_word_to_pattern) {
     /* input arguments:
      *  words : vector of words
      * output arguments:
@@ -42,17 +42,17 @@ void make_letter_word_pattern_map(const vector<string> & words,
     // determine unique index for pattern (make it if necessary)
     // add entry to resulting map
     
-    index_t word_index = 0;
+    size_t word_index = 0;
     vector<string>::const_iterator i;
 
     string::const_iterator j;
-    map<string, index_t>::iterator k;
+    map<string, size_t>::iterator k;
 
-    index_t pattern_index = 0;
+    size_t pattern_index = 0;
 
 
     for (j = ALPHABET.begin(); j != ALPHABET.end(); ++j) {
-        vector<index_t> v;
+        vector<size_t> v;
         v.resize(words.size());
         vec_letter_word_to_pattern.push_back(v);
     }
@@ -66,7 +66,7 @@ void make_letter_word_pattern_map(const vector<string> & words,
                 patterns.push_back(pattern);
                 miss_patterns.push_back(is_miss_pattern(pattern));
             }
-            index_t c_id = (index_t)(*j - 'a');
+            size_t c_id = (size_t)(*j - 'a');
             vec_letter_word_to_pattern[c_id][word_index] = pattern_indices[pattern];
         }
         word_index++;
@@ -74,8 +74,8 @@ void make_letter_word_pattern_map(const vector<string> & words,
 }
 
 context_t make_hangman_context(const string & dictionary_file_name,
-        unsigned int word_length, unsigned int n_misses_for_loss,
-        unsigned int max_depth) {
+        size_t word_length, size_t n_misses_for_loss,
+        size_t max_depth) {
 
     ifstream f(dictionary_file_name.c_str());
     assert(f);

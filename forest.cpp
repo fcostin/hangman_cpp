@@ -17,7 +17,7 @@
  *
  *      y       true iff the lower bound is greater than 1
  *
- * input features (all unsigned ints):
+ * input features (all unsigned size_ts):
  *
  *      x[0]    the number of live words
  *      x[1]    the number of lives Alice has remaining
@@ -40,7 +40,7 @@
  */
 
 /* decision tree classifiers */
-inline bool tree_clf_0(const int *x) {
+inline bool tree_clf_0(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[5]>21.500000) {goto node_5;} else {goto node_4;}
@@ -911,7 +911,7 @@ node_434:
 node_435:
 	return 1;
 }
-inline bool tree_clf_1(const int *x) {
+inline bool tree_clf_1(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>52.500000) {goto node_5;} else {goto node_4;}
@@ -1706,7 +1706,7 @@ node_396:
 node_397:
 	return 1;
 }
-inline bool tree_clf_2(const int *x) {
+inline bool tree_clf_2(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[3]>20.500000) {goto node_5;} else {goto node_4;}
@@ -2593,7 +2593,7 @@ node_442:
 node_443:
 	return 1;
 }
-inline bool tree_clf_3(const int *x) {
+inline bool tree_clf_3(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -3424,7 +3424,7 @@ node_414:
 node_415:
 	return 1;
 }
-inline bool tree_clf_4(const int *x) {
+inline bool tree_clf_4(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -4275,7 +4275,7 @@ node_424:
 node_425:
 	return 1;
 }
-inline bool tree_clf_5(const int *x) {
+inline bool tree_clf_5(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -5086,7 +5086,7 @@ node_404:
 node_405:
 	return 1;
 }
-inline bool tree_clf_6(const int *x) {
+inline bool tree_clf_6(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>243.000000) {goto node_5;} else {goto node_4;}
@@ -5993,7 +5993,7 @@ node_452:
 node_453:
 	return 1;
 }
-inline bool tree_clf_7(const int *x) {
+inline bool tree_clf_7(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -6756,7 +6756,7 @@ node_380:
 node_381:
 	return 1;
 }
-inline bool tree_clf_8(const int *x) {
+inline bool tree_clf_8(const size_t *x) {
 	if(x[0]>93.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[3]>15.500000) {goto node_5;} else {goto node_4;}
@@ -7567,7 +7567,7 @@ node_404:
 node_405:
 	return 0;
 }
-inline bool tree_clf_9(const int *x) {
+inline bool tree_clf_9(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -8522,7 +8522,7 @@ node_476:
 node_477:
 	return 0;
 }
-inline bool tree_clf_10(const int *x) {
+inline bool tree_clf_10(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[3]>23.500000) {goto node_5;} else {goto node_4;}
@@ -9569,7 +9569,7 @@ node_522:
 node_523:
 	return 1;
 }
-inline bool tree_clf_11(const int *x) {
+inline bool tree_clf_11(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>42.500000) {goto node_5;} else {goto node_4;}
@@ -10556,7 +10556,7 @@ node_492:
 node_493:
 	return 1;
 }
-inline bool tree_clf_12(const int *x) {
+inline bool tree_clf_12(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -11523,7 +11523,7 @@ node_482:
 node_483:
 	return 0;
 }
-inline bool tree_clf_13(const int *x) {
+inline bool tree_clf_13(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -12362,7 +12362,7 @@ node_418:
 node_419:
 	return 1;
 }
-inline bool tree_clf_14(const int *x) {
+inline bool tree_clf_14(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -13165,7 +13165,7 @@ node_400:
 node_401:
 	return 0;
 }
-inline bool tree_clf_15(const int *x) {
+inline bool tree_clf_15(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -14004,7 +14004,7 @@ node_418:
 node_419:
 	return 1;
 }
-inline bool tree_clf_16(const int *x) {
+inline bool tree_clf_16(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[5]>20.500000) {goto node_5;} else {goto node_4;}
@@ -14871,7 +14871,7 @@ node_432:
 node_433:
 	return 0;
 }
-inline bool tree_clf_17(const int *x) {
+inline bool tree_clf_17(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -15802,7 +15802,7 @@ node_464:
 node_465:
 	return 0;
 }
-inline bool tree_clf_18(const int *x) {
+inline bool tree_clf_18(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[5]>20.500000) {goto node_5;} else {goto node_4;}
@@ -16557,7 +16557,7 @@ node_376:
 node_377:
 	return 1;
 }
-inline bool tree_clf_19(const int *x) {
+inline bool tree_clf_19(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>39.500000) {goto node_5;} else {goto node_4;}
@@ -17592,7 +17592,7 @@ node_516:
 node_517:
 	return 0;
 }
-inline bool tree_clf_20(const int *x) {
+inline bool tree_clf_20(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -18459,7 +18459,7 @@ node_432:
 node_433:
 	return 1;
 }
-inline bool tree_clf_21(const int *x) {
+inline bool tree_clf_21(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -19294,7 +19294,7 @@ node_416:
 node_417:
 	return 0;
 }
-inline bool tree_clf_22(const int *x) {
+inline bool tree_clf_22(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>242.500000) {goto node_5;} else {goto node_4;}
@@ -20221,7 +20221,7 @@ node_462:
 node_463:
 	return 0;
 }
-inline bool tree_clf_23(const int *x) {
+inline bool tree_clf_23(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -21024,7 +21024,7 @@ node_400:
 node_401:
 	return 1;
 }
-inline bool tree_clf_24(const int *x) {
+inline bool tree_clf_24(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[4]>5.500000) {goto node_5;} else {goto node_4;}
@@ -21931,7 +21931,7 @@ node_452:
 node_453:
 	return 1;
 }
-inline bool tree_clf_25(const int *x) {
+inline bool tree_clf_25(const size_t *x) {
 	if(x[5]>21.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[4]>5.500000) {goto node_5;} else {goto node_4;}
@@ -22846,7 +22846,7 @@ node_456:
 node_457:
 	return 1;
 }
-inline bool tree_clf_26(const int *x) {
+inline bool tree_clf_26(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -23645,7 +23645,7 @@ node_398:
 node_399:
 	return 0;
 }
-inline bool tree_clf_27(const int *x) {
+inline bool tree_clf_27(const size_t *x) {
 	if(x[5]>22.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>80.500000) {goto node_5;} else {goto node_4;}
@@ -24588,7 +24588,7 @@ node_470:
 node_471:
 	return 1;
 }
-inline bool tree_clf_28(const int *x) {
+inline bool tree_clf_28(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>44.500000) {goto node_5;} else {goto node_4;}
@@ -25439,7 +25439,7 @@ node_424:
 node_425:
 	return 1;
 }
-inline bool tree_clf_29(const int *x) {
+inline bool tree_clf_29(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>240.500000) {goto node_5;} else {goto node_4;}
@@ -26346,7 +26346,7 @@ node_452:
 node_453:
 	return 0;
 }
-inline bool tree_clf_30(const int *x) {
+inline bool tree_clf_30(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>52.500000) {goto node_5;} else {goto node_4;}
@@ -27197,7 +27197,7 @@ node_424:
 node_425:
 	return 1;
 }
-inline bool tree_clf_31(const int *x) {
+inline bool tree_clf_31(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -28004,7 +28004,7 @@ node_402:
 node_403:
 	return 0;
 }
-inline bool tree_clf_32(const int *x) {
+inline bool tree_clf_32(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[3]>20.500000) {goto node_5;} else {goto node_4;}
@@ -29023,7 +29023,7 @@ node_508:
 node_509:
 	return 1;
 }
-inline bool tree_clf_33(const int *x) {
+inline bool tree_clf_33(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>48.500000) {goto node_5;} else {goto node_4;}
@@ -29738,7 +29738,7 @@ node_356:
 node_357:
 	return 0;
 }
-inline bool tree_clf_34(const int *x) {
+inline bool tree_clf_34(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[4]>8.500000) {goto node_5;} else {goto node_4;}
@@ -30693,7 +30693,7 @@ node_476:
 node_477:
 	return 1;
 }
-inline bool tree_clf_35(const int *x) {
+inline bool tree_clf_35(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -31660,7 +31660,7 @@ node_482:
 node_483:
 	return 0;
 }
-inline bool tree_clf_36(const int *x) {
+inline bool tree_clf_36(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -32619,7 +32619,7 @@ node_478:
 node_479:
 	return 1;
 }
-inline bool tree_clf_37(const int *x) {
+inline bool tree_clf_37(const size_t *x) {
 	if(x[5]>21.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[4]>5.500000) {goto node_5;} else {goto node_4;}
@@ -33498,7 +33498,7 @@ node_438:
 node_439:
 	return 1;
 }
-inline bool tree_clf_38(const int *x) {
+inline bool tree_clf_38(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>47.500000) {goto node_5;} else {goto node_4;}
@@ -34289,7 +34289,7 @@ node_394:
 node_395:
 	return 0;
 }
-inline bool tree_clf_39(const int *x) {
+inline bool tree_clf_39(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>240.500000) {goto node_5;} else {goto node_4;}
@@ -35164,7 +35164,7 @@ node_436:
 node_437:
 	return 0;
 }
-inline bool tree_clf_40(const int *x) {
+inline bool tree_clf_40(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -35999,7 +35999,7 @@ node_416:
 node_417:
 	return 0;
 }
-inline bool tree_clf_41(const int *x) {
+inline bool tree_clf_41(const size_t *x) {
 	if(x[5]>23.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>5.500000) {goto node_5;} else {goto node_4;}
@@ -36950,7 +36950,7 @@ node_474:
 node_475:
 	return 1;
 }
-inline bool tree_clf_42(const int *x) {
+inline bool tree_clf_42(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -37761,7 +37761,7 @@ node_404:
 node_405:
 	return 1;
 }
-inline bool tree_clf_43(const int *x) {
+inline bool tree_clf_43(const size_t *x) {
 	if(x[5]>21.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[3]>11.500000) {goto node_5;} else {goto node_4;}
@@ -38640,7 +38640,7 @@ node_438:
 node_439:
 	return 0;
 }
-inline bool tree_clf_44(const int *x) {
+inline bool tree_clf_44(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -39475,7 +39475,7 @@ node_416:
 node_417:
 	return 1;
 }
-inline bool tree_clf_45(const int *x) {
+inline bool tree_clf_45(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>2.500000) {goto node_5;} else {goto node_4;}
@@ -40370,7 +40370,7 @@ node_446:
 node_447:
 	return 0;
 }
-inline bool tree_clf_46(const int *x) {
+inline bool tree_clf_46(const size_t *x) {
 	if(x[4]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[1]>3.500000) {goto node_5;} else {goto node_4;}
@@ -41101,7 +41101,7 @@ node_364:
 node_365:
 	return 1;
 }
-inline bool tree_clf_47(const int *x) {
+inline bool tree_clf_47(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -41864,7 +41864,7 @@ node_380:
 node_381:
 	return 0;
 }
-inline bool tree_clf_48(const int *x) {
+inline bool tree_clf_48(const size_t *x) {
 	if(x[2]>5.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[0]>240.500000) {goto node_5;} else {goto node_4;}
@@ -42719,7 +42719,7 @@ node_426:
 node_427:
 	return 0;
 }
-inline bool tree_clf_49(const int *x) {
+inline bool tree_clf_49(const size_t *x) {
 	if(x[1]>9.500000) {goto node_3;} else {goto node_2;}
 node_2:
 	if(x[2]>2.500000) {goto node_5;} else {goto node_4;}
@@ -43808,8 +43808,8 @@ node_543:
 }
 
 /* forest classifier */
-bool forest_clf(const int *x) {
-	unsigned int votes_no = 0, votes_yes = 0;
+bool forest_clf(const size_t *x) {
+	size_t votes_no = 0, votes_yes = 0;
 	/* tally votes */
 	if(tree_clf_0(x)) {++votes_yes;} else {++votes_no;}
 	if(tree_clf_1(x)) {++votes_yes;} else {++votes_no;}

@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-state_t make_initial_state(const unordered_set<index_t> & live_word_indices,
-        unsigned int word_length) {
+state_t make_initial_state(const unordered_set<size_t> & live_word_indices,
+        size_t word_length) {
     vector<char> guesses;
     int n_misses = 0;
     vector<char> partial_word;
@@ -18,10 +18,10 @@ state_t make_initial_state(const unordered_set<index_t> & live_word_indices,
     return h;
 }
 
-unordered_set<index_t> make_all_word_indices(const context_t & context) {
-    index_t i = 0;
+unordered_set<size_t> make_all_word_indices(const context_t & context) {
+    size_t i = 0;
     vector<string>::const_iterator it;
-    unordered_set<index_t> result;
+    unordered_set<size_t> result;
     for (it = context.words.begin(); it != context.words.end(); ++it) {
         result.insert(i++);
     }
@@ -33,8 +33,8 @@ int main(int n_args, char ** args) {
         cout << "usage: word_length n_misses_for_loss" << endl;
         return 1;
     }
-    unsigned int word_length = 0;
-    unsigned int n_misses_for_loss = 0;
+    size_t word_length = 0;
+    size_t n_misses_for_loss = 0;
     stringstream word_length_arg(args[1]);
     word_length_arg >> word_length;
     stringstream n_misses_for_loss_arg(args[2]);
@@ -42,7 +42,7 @@ int main(int n_args, char ** args) {
     cout << "# got word_length := " << word_length << endl;
     cout << "# got n_misses_for_loss := " << n_misses_for_loss << endl;
 
-    unsigned int max_depth = 2 * ALPHABET.size(); // full search
+    size_t max_depth = 2 * ALPHABET.size(); // full search
 
     cout << "# loading context..." << endl;
     context_t ctx = make_hangman_context("words.txt", word_length,

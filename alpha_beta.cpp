@@ -19,7 +19,7 @@ inline string make_key_for_game_state(const state_t & h) {
 }
 
 score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        unsigned int depth, score_t alpha, score_t beta) {
+        size_t depth, score_t alpha, score_t beta) {
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
@@ -35,8 +35,8 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
-        vector<guesser_move_t> moves = generate_guesser_moves(ctx, h, h_key, depth);
-        vector<guesser_move_t>::iterator i;
+        vector<char> moves = generate_guesser_moves(ctx, h, h_key, depth);
+        vector<char>::iterator i;
         for (i = moves.begin(); i != moves.end(); i++) {
             state_t next_h = apply_guesser_move(ctx, h, *i);
             score_t score = optimal_foe_score(ctx, cache, next_h, depth - 1,
@@ -61,7 +61,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 }
 
 score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        unsigned int depth, score_t alpha, score_t beta) {
+        size_t depth, score_t alpha, score_t beta) {
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
@@ -77,8 +77,8 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
     if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
-        vector<foe_move_t> moves = generate_foe_moves(ctx, h, h_key, depth);
-        vector<foe_move_t>::iterator i;
+        vector<size_t> moves = generate_foe_moves(ctx, h, h_key, depth);
+        vector<size_t>::iterator i;
         for (i = moves.begin(); i != moves.end(); i++) {
             state_t next_h = apply_foe_move(ctx, h, *i);
             score_t score = optimal_guesser_score(ctx, cache, next_h,

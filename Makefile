@@ -2,7 +2,7 @@
 WARNING_FLAGS := -Wall -Wextra -Werror -pedantic -Wconversion
 OPT_FLAGS := -O3
 GPROF_FLAGS := -g -pg
-CPPC_FLAGS := $(WARNING_FLAGS) $(OPT_FLAGS) -std=c++0x 
+CPPC_FLAGS := $(WARNING_FLAGS) $(OPT_FLAGS) -std=c++0x -march=core2
 # for google-perftools profiler
 # ref : http://stackoverflow.com/questions/9577627/ubuntu-11-10-linking-perftools-library
 WITH_PROFILING := -Wl,--no-as-needed -lprofiler -Wl,-as-needed

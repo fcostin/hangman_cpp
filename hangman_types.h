@@ -18,14 +18,14 @@ using namespace std;
 
 struct state_t {
     vector<char> guesses;
-    unsigned int n_misses;
-    unordered_set<index_t> live_word_indices;
+    size_t n_misses;
+    unordered_set<size_t> live_word_indices;
     vector<char> partial_word;
     char last_guess;
 
     inline state_t(const vector<char> & guesses,
-            const unsigned int & n_misses,
-            const unordered_set<index_t> & live_word_indices,
+            const size_t & n_misses,
+            const unordered_set<size_t> & live_word_indices,
             const vector<char> & partial_word,
             const char & last_guess) {
         this->guesses = guesses;
@@ -37,18 +37,18 @@ struct state_t {
 };
 
 struct context_t {
-    unsigned int word_length;
-    unsigned int n_misses_for_loss;
-    unsigned int max_depth;
+    size_t word_length;
+    size_t n_misses_for_loss;
+    size_t max_depth;
     vector<string> words;
     vector<string> patterns;
     vector<bool> miss_patterns;
-    map<string, index_t> pattern_indices;
-    vector<vector<index_t> > vec_letter_word_to_pattern;
+    map<string, size_t> pattern_indices;
+    vector<vector<size_t> > vec_letter_word_to_pattern;
     vector<bool> letter_table;
 
-    inline index_t get_pattern_id(const char & c, const index_t & word_id) const {
-        index_t c_index = (index_t)(c - 'a');
+    inline size_t get_pattern_id(const char & c, const size_t & word_id) const {
+        size_t c_index = (size_t)(c - 'a');
         return this->vec_letter_word_to_pattern[c_index][word_id];
     }
 };
@@ -65,12 +65,12 @@ enum eval_result_t {
 struct cache_t {
     unordered_map<string, score_t> move_cache;
 
-    vector<unsigned int> stat_not_terminal;
-    vector<unsigned int> stat_base_loss;
-    vector<unsigned int> stat_base_win;
-    vector<unsigned int> stat_upper_bound_cheap;
-    vector<unsigned int> stat_lower_bound_expensive;
-    vector<unsigned int> stat_upper_bound_expensive;
+    vector<size_t> stat_not_terminal;
+    vector<size_t> stat_base_loss;
+    vector<size_t> stat_base_win;
+    vector<size_t> stat_upper_bound_cheap;
+    vector<size_t> stat_lower_bound_expensive;
+    vector<size_t> stat_upper_bound_expensive;
         
     inline cache_t() {
         stat_not_terminal.resize(1 + (ALPHABET_SIZE * 2), 0);
@@ -81,7 +81,7 @@ struct cache_t {
         stat_upper_bound_expensive.resize(1 + (ALPHABET_SIZE * 2), 0);
     }
 
-    inline void log_eval_result(const eval_result_t & er, const unsigned int & depth) {
+    inline void log_eval_result(const eval_result_t & er, const size_t & depth) {
         assert(depth <= (ALPHABET_SIZE * 2));
         switch(er) {
             case EVAL_RESULT_NOT_TERMINAL:
@@ -107,8 +107,8 @@ struct cache_t {
         }
     }
 
-    void dump_stats(ostream & out, const vector<unsigned int> & v) {
-        vector<unsigned int>::const_reverse_iterator i;
+    void dump_stats(ostream & out, const vector<size_t> & v) {
+        vector<size_t>::const_reverse_iterator i;
         for(i = v.rbegin(); i != v.rend(); ++i) {
             out << *i;
             if (i + 1 != v.rend()) {
