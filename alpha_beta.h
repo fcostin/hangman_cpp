@@ -2,7 +2,8 @@
 #define ALPHA_BETA_H
 
 #include "assert.h"
-#include <iostream> // for debugging
+
+#include "hangman_debug.h"
 
 #include "hangman_types.h"
 #include "hangman_constants.h"

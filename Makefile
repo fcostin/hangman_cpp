@@ -12,7 +12,7 @@ all: a.out
 .PHONY: all
 
 a.out: main.o hangman_context.o alpha_beta.o evaluation.o move_apply.o \
-		move_gen.o exclusion.o forest.o
+		move_gen.o exclusion.o forest.o hangman_debug.o
 	$(CPPC) $(CPPC_FLAGS) $(WITH_GPERFTOOLS_PROFILING) $(WITH_GPERFTOOLS_MALLOC) -o $@ $^
 
 %.o:	%.cpp

@@ -1,8 +1,10 @@
 #ifndef MOVE_GEN_H
 #define MOVE_GEN_H
 
-#include "alpha_beta.h"
 #include <algorithm>
+
+#include "alpha_beta.h"
+#include "hangman_debug.h"
 
 using namespace std;
 

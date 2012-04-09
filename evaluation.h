@@ -6,6 +6,7 @@
 #include "math.h"
 #include "forest.h"
 #include "exclusion.h"
+#include "hangman_debug.h"
 
 pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const state_t & h);
 

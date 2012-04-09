@@ -34,6 +34,7 @@ vector<char> generate_guesser_moves(
     // Heuristic: assume Bob is trying to maximise the number of live words,
     // and play to minimise what he's doing (minimise the maximum number of
     // live words).
+    DEBUG(cout << "$MOVEGEN Alice begin" << endl);
 
     // -- figure out which letters are still useful options
     vector<size_t> unused_letter_indices = make_unused_letter_indices(
@@ -56,8 +57,10 @@ vector<char> generate_guesser_moves(
     vector<pair<size_t, size_t> >::const_iterator j;
     for (j = items.begin(); j != items.end(); ++j) {
         char move_c = static_cast<char>(j->first + 'a');
+        DEBUG(cout << "$MOVEGEN Alice " << move_c << " with weight " << j->second << endl);
         moves.push_back(move_c);
     }
+    DEBUG(cout << "$MOVEGEN Alice end" << endl);
     return moves;
 }
 
@@ -66,6 +69,7 @@ vector<size_t> generate_foe_moves(
         const state_t & h,
         const string & h_key __attribute__((unused)),
         size_t depth __attribute__((unused))) {
+    DEBUG(cout << "$MOVEGEN Bob begin" << endl);
     // count occurances of patterns for guessed letter in set of live words
     size_t c_index = (size_t)(h.last_guess - 'a');
     unordered_map<size_t, size_t> pattern_counts = make_pattern_counts(ctx,
@@ -79,6 +83,13 @@ vector<size_t> generate_foe_moves(
     vector<pair<size_t, size_t> >::const_reverse_iterator i;
     for (i = items.rbegin(); i != items.rend(); ++i) {
         moves.push_back(i->first);
+        if (ctx.miss_patterns[i->first]) {
+            DEBUG(cout << "$MOVEGEN Bob " << i->first << " with weight " << i->second <<
+                    " *** miss move" << endl);
+        } else {
+            DEBUG(cout << "$MOVEGEN Bob " << i->first << " with weight " << i->second <<
+                    endl);
+        }
     }
     // BUT! always try the miss move first
     vector<size_t>::iterator j;
@@ -88,5 +99,6 @@ vector<size_t> generate_foe_moves(
             break;
         }
     }
+    DEBUG(cout << "$MOVEGEN Bob end" << endl);
     return moves;
 }
