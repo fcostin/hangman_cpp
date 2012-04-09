@@ -29,9 +29,9 @@ inline const char * small_int_to_string(const size_t & i) {
         case 7:
             return "7";
         case 8:
-            return "18";
+            return "8";
         case 9:
-            return "19";
+            return "9";
         case 10:
             return "10";
         case 11:
