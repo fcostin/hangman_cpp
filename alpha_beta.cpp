@@ -63,12 +63,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
         size_t depth, score_t alpha, score_t beta) {
     
-    // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
-    lru_cache_t<string, score_t>::item_list_t::const_iterator cache_it = cache.move_cache.find(h_key);
-    if (cache_it != cache.move_cache.end()) {
-        return cache_it->second;
-    }
 
     score_t node_score;
 
@@ -91,13 +86,5 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         node_score = beta;
     }
     
-    /*
-    if (node_score == SCORE_GUESSER_WIN) {
-        cout << "bob: " << h_key << "|" << "alice wins" << endl;
-    } else {
-        cout << "bob: " << h_key << "|" << "alice loses" << endl;
-    }*/
-    // stash the answer in the cache
-    cache.move_cache.insert(h_key, node_score);
     return node_score;
 }
