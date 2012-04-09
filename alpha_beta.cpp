@@ -49,12 +49,6 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         node_score = alpha;
     }
 
-    /*
-    if (node_score == SCORE_GUESSER_WIN) {
-        cout << "alice: " << h_key << "|" << "alice wins" << endl;
-    } else {
-        cout << "alice: " << h_key << "|" << "alice loses" << endl;
-    }*/
     // stash the answer in the cache
     cache.move_cache.insert(h_key, node_score);
     return node_score;
