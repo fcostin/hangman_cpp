@@ -8,9 +8,9 @@ def main():
         'CPUPROFILE' : './hangman.prof',
         'CPUPROFILE_FREQUENCY' : 100,
     }
-    param_string = ' '.join(['%s=%s' % (str(k), str(v)) for (k, v) in params.iteritems()])
+    param_string = ' '.join(['%s=%s' % (str(k), str(v)) for (k, v) in params.items()])
     command = 'env %s ./a.out %s' % (param_string, arg_string)
-    print 'running "%s"' % command
+    print('running "%s"' % command)
     p = subprocess.Popen(command, shell = True)
     p.wait()
     sys.exit(p.returncode)
