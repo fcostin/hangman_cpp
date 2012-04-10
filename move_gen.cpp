@@ -42,16 +42,14 @@ vector<char> generate_guesser_moves(
     assert(unused_letter_indices.size() <= ALPHABET_SIZE - h.guesses.size());
 
     // -- compute Bob's maximum number of live words for each letter
-    unordered_map<size_t, size_t> letter_max_pattern_counts;
+    vector<pair<size_t, size_t> > items;
     vector<size_t>::const_iterator i;
     for(i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
         unordered_map<size_t, size_t> pattern_counts = make_pattern_counts(ctx,
                 h.live_word_indices, *i);
-        letter_max_pattern_counts[*i] = most_common_pattern(pattern_counts).second;
+        items.push_back(make_pair(*i, most_common_pattern(pattern_counts).second));
     }
     // -- reel off our guesses in increasing order of max live words
-    vector<pair<size_t, size_t> > items(letter_max_pattern_counts.begin(),
-            letter_max_pattern_counts.end());
     sort(items.begin(), items.end(), compare_by_second<pair<size_t, size_t> >);
     vector<char> moves;
     vector<pair<size_t, size_t> >::const_iterator j;
