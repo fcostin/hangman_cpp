@@ -5,6 +5,7 @@
 
 #include "alpha_beta.h"
 #include "hangman_debug.h"
+#include "hangman_algorithm.h"
 
 using namespace std;
 

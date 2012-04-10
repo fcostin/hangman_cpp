@@ -140,38 +140,36 @@ size_t upper_bound_on_remaining_words(
     that Bob is cheating...)
      */
 
-
-    // lpc aka 'letter_index -> pattern_index -> count (frequency)'
-    vector<unordered_map<size_t, size_t> > lpc;
-    lpc.resize(ALPHABET_SIZE);
-
     vector<size_t>::const_iterator i;
-    for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
-        vector<size_t>::const_iterator j;
-        for (j = word_indices.begin(); j != word_indices.end(); ++j) {
-            size_t pattern_id = ctx.vec_letter_word_to_pattern[*i][*j];
-            if (lpc[*i].count(pattern_id)) {
-                lpc[*i][pattern_id] += 1;
-            } else {
-                lpc[*i][pattern_id] = 1;
-            }
-        }
-    }
+    vector<size_t>::const_iterator j;
+    vector<pair<size_t, size_t> >::const_iterator k;
 
-    // form set of (max_p lcp[c][p]) for each unused letter c
+    vector<size_t> patterns;
+    patterns.reserve(word_indices.size());
+    vector<pair<size_t, size_t> > pattern_counts;
+    pattern_counts.reserve(unused_letter_indices.size());
+
     vector<size_t> lc_max_unique;
     for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
-        unordered_map<size_t, size_t>::const_iterator j;
+        // map words to pattern id wrt chosen letter
+        for (j = word_indices.begin(); j != word_indices.end(); ++j) {
+            patterns.push_back(ctx.vec_letter_word_to_pattern[*i][*j]);
+        }
+        // compute vector of pattern counts
+        pattern_counts = count_elements(patterns);
+        // compute max pattern count
         size_t acc = 0;
-        for (j = lpc[*i].begin(); j != lpc[*i].end(); ++j) {
-            acc = (j->second > acc) ? j->second : acc;
+        for (k = pattern_counts.begin(); k != pattern_counts.end(); ++k) {
+            acc = (k->second > acc) ? k->second : acc;
         }
-        if (acc > 0) {
-            lc_max_unique.push_back(acc);
-        }
+        // store it
+        lc_max_unique.push_back(acc);
+        // clean working data stuctures for next letter
+        patterns.clear();
+        pattern_counts.clear();
     }
 
-    // ensure lc_max_unique contains only unique elements and is sorted
+    // ensure lc_max_unique contains only unique counts, and is sorted
     sort_and_remove_nonunique_elements(lc_max_unique);
     
     // compute the sum of the n largest elements of lc_max_unique, where
