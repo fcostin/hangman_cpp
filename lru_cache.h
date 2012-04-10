@@ -2,8 +2,9 @@
 #define LRU_CACHE_H
 
 #include <list>
-#include <unordered_map>
 #include <algorithm>
+#include "ugly_hash_table.h"
+#include "fnv_hash.h"
 
 using namespace std;
 
@@ -11,15 +12,17 @@ template <typename key_t, typename value_t>
 struct lru_cache_t {
     typedef pair<key_t, value_t> item_t;
     typedef list<item_t> item_list_t;
+    typedef ugly_hash_table_t<key_t, typename item_list_t::iterator,
+        fnv_1a_hash_t (*) (const string &)> cache_map_t;
 
     item_list_t item_list;
-    unordered_map<key_t, typename item_list_t::iterator> cache_map;
+    cache_map_t cache_map;
     size_t max_item_count;
     size_t item_count;
 
-    lru_cache_t(const size_t & max_item_count) {
-        this->item_count = 0;
+    lru_cache_t(const size_t & max_item_count) : cache_map(max_item_count, fnv_1a_hash) {
         assert(max_item_count > 0);
+        this->item_count = 0;
         this->max_item_count = max_item_count;
     }
 
@@ -36,20 +39,19 @@ struct lru_cache_t {
     }
 
     inline typename item_list_t::const_iterator find(const key_t & k) {
-        typename unordered_map<key_t, typename item_list_t::iterator>::const_iterator i;
-        i = cache_map.find(k);
-        if (i == cache_map.end()) {
+        if (cache_map.contains(k)) {
+            typename item_list_t::iterator i = cache_map.get(k);
+            // move accessed item to the front of the list
+            item_list.push_front(*i);
+            item_list.erase(i);
+            // update the map to point to the moved item
+            cache_map.insert(k, item_list.begin());
+            // return an iterator to the moved item
+            return item_list.begin();
+        } else {
             // return an iterator to the end of the list of
             // items to signal that the key was not found
             return item_list.end();
-        } else {
-            // move accessed item to the front of the list
-            item_list.push_front(*(i->second));
-            item_list.erase(i->second);
-            // update the map to point to the moved item
-            cache_map[k] = item_list.begin();
-            // return an iterator to the moved item
-            return item_list.begin();
         }
     }
 
@@ -71,7 +73,7 @@ struct lru_cache_t {
         // entry to point to it.
         item_t item = make_pair(key, value);
         item_list.push_front(item);
-        cache_map[key] = item_list.begin();
+        cache_map.insert(key, item_list.begin());
     }
 };
 
