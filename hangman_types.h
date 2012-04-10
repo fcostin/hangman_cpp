@@ -3,7 +3,6 @@
 
 #include "assert.h"
 #include <vector>
-#include <unordered_set>
 #include <string>
 #include <map>
 #include <unordered_map>
@@ -18,15 +17,15 @@
 using namespace std;
 
 struct state_t {
-    vector<char> guesses;
+    vector<char> guesses; /* elements must be unique! */
     size_t n_misses;
-    unordered_set<size_t> live_word_indices;
+    vector<size_t> live_word_indices; /* elements must be unique! */
     vector<char> partial_word;
     char last_guess;
 
     inline state_t(const vector<char> & guesses,
             const size_t & n_misses,
-            const unordered_set<size_t> & live_word_indices,
+            const vector<size_t> & live_word_indices,
             const vector<char> & partial_word,
             const char & last_guess) {
         this->guesses = guesses;

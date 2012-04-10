@@ -10,7 +10,7 @@
 #include "alpha_beta.h"
 
 
-state_t make_initial_state(const unordered_set<size_t> & live_word_indices,
+state_t make_initial_state(const vector<size_t> & live_word_indices,
         size_t word_length) {
     vector<char> guesses;
     int n_misses = 0;
@@ -22,12 +22,12 @@ state_t make_initial_state(const unordered_set<size_t> & live_word_indices,
     return h;
 }
 
-unordered_set<size_t> make_all_word_indices(const context_t & context) {
+vector<size_t> make_all_word_indices(const context_t & context) {
     size_t i = 0;
     vector<string>::const_iterator it;
-    unordered_set<size_t> result;
+    vector<size_t> result;
     for (it = context.words.begin(); it != context.words.end(); ++it) {
-        result.insert(i++);
+        result.push_back(i++);
     }
     return result;
 }

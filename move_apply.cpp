@@ -20,11 +20,11 @@ state_t apply_foe_move(const context_t & ctx, const state_t & h,
 
     //  live_word_indices -- rebuild the live word indices
     char c = h.last_guess;
-    unordered_set<size_t> next_live_word_indices;
-    unordered_set<size_t>::const_iterator i;
+    vector<size_t> next_live_word_indices;
+    vector<size_t>::const_iterator i;
     for (i = h.live_word_indices.begin(); i != h.live_word_indices.end(); ++i) {
         if (ctx.get_pattern_id(c, *i) == chosen_pattern_index) {
-            next_live_word_indices.insert(*i);
+            next_live_word_indices.push_back(*i);
         }
     }
     //  partial word -- what pattern does the pattern index m correspond to?

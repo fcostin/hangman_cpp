@@ -44,14 +44,14 @@ vector<bool> make_letter_table(const vector<string> & words) {
 vector<size_t> make_unused_letter_indices(const vector<bool> & table,
         const size_t & n_words,
         const vector<char> & used_letters,
-        const unordered_set<size_t> & word_indices) {
+        const vector<size_t> & word_indices) {
     /* return indices of unused letters that appear in 1 or more words */
     vector<size_t> unused_letter_indices;
     for (size_t i = 0; i < ALPHABET_SIZE; ++i) {
         if (find(used_letters.begin(), used_letters.end(), index_to_letter(i)) != used_letters.end()) {
             continue;
         }
-        unordered_set<size_t>::const_iterator j;
+        vector<size_t>::const_iterator j;
         for (j = word_indices.begin(); j != word_indices.end(); ++j) {
             if (read_letter_table(table, n_words, i, *j)) {
                 unused_letter_indices.push_back(i);
@@ -64,13 +64,13 @@ vector<size_t> make_unused_letter_indices(const vector<bool> & table,
 
 size_t lower_bound_on_remaining_words(const vector<bool> & table,
         const size_t & n_words,
-        const unordered_set<size_t> & word_indices,
+        const vector<size_t> & word_indices,
         const vector<size_t> & unused_letter_indices,
         const size_t & lives) {
     
     vector<size_t> letter_counts;
     letter_counts.resize(ALPHABET_SIZE, 0);
-    unordered_set<size_t>::const_iterator i;
+    vector<size_t>::const_iterator i;
     vector<size_t>::const_iterator j;
     for (i = word_indices.begin(); i != word_indices.end(); ++i) {
         for (j = unused_letter_indices.begin(); j != unused_letter_indices.end(); ++j) {
@@ -107,7 +107,7 @@ size_t lower_bound_on_remaining_words(const vector<bool> & table,
 }
 
 size_t upper_bound_on_remaining_words(
-        const unordered_set<size_t> & word_indices,
+        const vector<size_t> & word_indices,
         const vector<size_t> & unused_letter_indices,
         const context_t & ctx,
         const size_t & lives) {
@@ -147,7 +147,7 @@ size_t upper_bound_on_remaining_words(
 
     vector<size_t>::const_iterator i;
     for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
-        unordered_set<size_t>::const_iterator j;
+        vector<size_t>::const_iterator j;
         for (j = word_indices.begin(); j != word_indices.end(); ++j) {
             size_t pattern_id = ctx.vec_letter_word_to_pattern[*i][*j];
             if (lpc[*i].count(pattern_id)) {

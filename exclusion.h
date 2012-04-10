@@ -5,7 +5,6 @@
 
 #include <string>
 #include <vector>
-#include <unordered_set>
 #include <algorithm>
 
 #include "hangman_constants.h"
@@ -32,16 +31,16 @@ vector<bool> make_letter_table(const vector<string> & words);
 vector<size_t> make_unused_letter_indices(const vector<bool> & table,
         const size_t & n_words,
         const vector<char> & used_letters,
-        const unordered_set<size_t> & word_indices);
+        const vector<size_t> & word_indices);
 
 size_t lower_bound_on_remaining_words(const vector<bool> & table,
         const size_t & n_words,
-        const unordered_set<size_t> & word_indices,
+        const vector<size_t> & word_indices,
         const vector<size_t> & unused_letter_indices,
         const size_t & lives);
 
 size_t upper_bound_on_remaining_words(
-        const unordered_set<size_t> & word_indices,
+        const vector<size_t> & word_indices,
         const vector<size_t> & unused_letter_indices,
         const context_t & ctx,
         const size_t & lives);

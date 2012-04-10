@@ -6,9 +6,9 @@ bool compare_by_second(const T & a, const T & b) {
 }
 
 unordered_map<size_t, size_t> make_pattern_counts(const context_t & ctx,
-        const unordered_set<size_t> & word_indices, const size_t & c_index) {
+        const vector<size_t> & word_indices, const size_t & c_index) {
     unordered_map<size_t, size_t> pattern_counts;
-    unordered_set<size_t>::const_iterator j;
+    vector<size_t>::const_iterator j;
     for (j = word_indices.begin(); j != word_indices.end(); ++j) {
         size_t pattern_id = ctx.vec_letter_word_to_pattern[c_index][*j];
         if (pattern_counts.count(pattern_id)) {
