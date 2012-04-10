@@ -6,6 +6,8 @@
 #include "hangman_constants.h"
 #include "exclusion.h"
 
+#include <fstream>
+
 string make_pattern(char c, const string & word);
 
 void make_letter_word_pattern_map(const vector<string> & words,

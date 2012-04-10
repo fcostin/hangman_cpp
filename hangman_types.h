@@ -2,13 +2,12 @@
 #define HANGMAN_TYPES_H
 
 #include "assert.h"
+#include "stdio.h"
+
 #include <vector>
 #include <string>
 #include <map>
 #include <algorithm>
-#include <sstream>
-#include <fstream>
-#include <iostream>
 
 #include "hangman_constants.h"
 #include "lru_cache.h"
@@ -105,37 +104,6 @@ struct cache_t {
                 assert(0); // wut?!
         }
     }
-
-    void dump_stats(ostream & out, const vector<size_t> & v) {
-        vector<size_t>::const_reverse_iterator i;
-        for(i = v.rbegin(); i != v.rend(); ++i) {
-            out << *i;
-            if (i + 1 != v.rend()) {
-                out << ", ";
-            }
-        }
-        out << endl;
-    }
-
-    void dump_summary(ostream & out) {
-        out << "-------------" << endl;
-        out << "Cache summary" << endl;
-        out << "-------------" << endl;
-        out << "\tmove_cache size " << move_cache.size() << endl;
-        out << "\tstat_not_terminal ";
-        dump_stats(out, stat_not_terminal);
-        out << "\tstat_base_loss ";
-        dump_stats(out, stat_base_loss);
-        out << "\tstat_base_win ";
-        dump_stats(out, stat_base_win);
-        out << "\tstat_upper_bound_cheap ";
-        dump_stats(out, stat_upper_bound_cheap);
-        // out << "\tstat_upper_bound_expensive ";
-        // dump_stats(out, stat_upper_bound_expensive);
-        out << "\tstat_lower_bound_expensive ";
-        dump_stats(out, stat_lower_bound_expensive);
-    }
-
 };
 
 #endif /* HANGMAN_TYPES_H */

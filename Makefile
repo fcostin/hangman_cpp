@@ -1,5 +1,5 @@
 # g++
-WARNING_FLAGS := -Wall -Wextra -Werror -pedantic -Wconversion
+WARNING_FLAGS := -Wall -Wextra -Werror -pedantic -Wconversion -Wno-variadic-macros
 OPT_FLAGS := -O2 -g
 CPPC_FLAGS := $(WARNING_FLAGS) $(OPT_FLAGS) -mtune=core2
 # for google-perftools profiler

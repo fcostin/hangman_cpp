@@ -1,7 +1,7 @@
 #ifndef HANGMAN_UTILS_H
 #define HANGMAN_UTILS_H
 
-#include "hangman_types.h"
+#include <sstream>
 
 template <class T>
 inline string to_string(const T& t) {

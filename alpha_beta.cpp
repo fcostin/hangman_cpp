@@ -25,10 +25,10 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     string h_key = make_key_for_game_state(h);
     lru_cache_t<string, score_t>::item_list_t::const_iterator cache_it = cache.move_cache.find(h_key);
     if (cache_it != cache.move_cache.end()) {
-        DEBUG(cout << "$CACHE HIT " << h_key << " " << cache_it->second << endl);
+        DEBUG_PRINTF("$CACHE HIT %s %f\n", h_key.c_str(), cache_it->second);
         return cache_it->second;
     }
-    DEBUG(cout << "$CACHE MISS " << h_key << endl);
+    DEBUG_PRINTF("$CACHE MISS %s\n", h_key.c_str());
 
     score_t node_score;
 
@@ -53,7 +53,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 
     // stash the answer in the cache
     cache.move_cache.insert(h_key, node_score);
-    DEBUG(cout << "$CACHE STORE " << h_key << " " << node_score << endl);
+    DEBUG_PRINTF("$CACHE STORE %s %f\n", h_key.c_str(), node_score);
     return node_score;
 }
 

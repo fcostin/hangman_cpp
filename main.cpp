@@ -1,6 +1,6 @@
 #include "stdlib.h"
 #include "string.h"
-#include <iostream>
+#include "stdio.h"
 
 #include "hangman_types.h"
 #include "hangman_constants.h"
@@ -8,7 +8,6 @@
 #include "hangman_utils.h"
 #include "hangman_debug.h"
 #include "alpha_beta.h"
-
 
 state_t make_initial_state(const vector<size_t> & live_word_indices,
         size_t word_length) {
@@ -33,9 +32,39 @@ vector<size_t> make_all_word_indices(const context_t & context) {
 }
 
 void print_usage_and_die() {
-    cerr << "usage: [--debug] word_length n_misses_for_loss" << endl;
+    fprintf(stderr, "usage: [--debug] word_length n_misses_for_loss\n");
     exit(1);
 }
+
+void debug_printf_vector(const vector<size_t> & v) {
+    vector<size_t>::const_reverse_iterator i;
+    for(i = v.rbegin(); i != v.rend(); ++i) {
+        DEBUG_PRINTF("%lu", *i);
+        if (i + 1 != v.rend()) {
+            DEBUG_PRINTF(", ");
+        }
+    }
+    DEBUG_PRINTF("\n");
+}
+
+void debug_printf_cache(const cache_t & cache) {
+    DEBUG_PRINTF("-------------\n");
+    DEBUG_PRINTF("Cache summary\n");
+    DEBUG_PRINTF("-------------\n");
+    DEBUG_PRINTF("\tmove_cache size %lu \n", cache.move_cache.size());
+    DEBUG_PRINTF("\tstat_not_terminal ");
+    debug_printf_vector(cache.stat_not_terminal);
+    DEBUG_PRINTF("\tstat_base_loss ");
+    debug_printf_vector(cache.stat_base_loss);
+    DEBUG_PRINTF("\tstat_base_win ");
+    debug_printf_vector(cache.stat_base_win);
+    DEBUG_PRINTF("\tstat_upper_bound_cheap ");
+    debug_printf_vector(cache.stat_upper_bound_cheap);
+    DEBUG_PRINTF("\tstat_lower_bound_expensive ");
+    debug_printf_vector(cache.stat_lower_bound_expensive);
+}
+
+
 
 int main(int n_args, char ** args) {
     size_t word_length = 0;
@@ -60,28 +89,28 @@ int main(int n_args, char ** args) {
         n_misses_for_loss_arg >> n_misses_for_loss;
     }
 
-    cout << "# got word_length := " << word_length << endl;
-    cout << "# got n_misses_for_loss := " << n_misses_for_loss << endl;
+    printf("# got word_length = %lu\n", word_length);
+    printf("# got n_misses_for_loss = %lu\n", n_misses_for_loss);
 
     // set up context (dictionary of words and derived constant structures)
     size_t max_depth = 2 * ALPHABET.size(); // full search
-    cout << "# loading context..." << endl;
+    printf("#  loading context...\n");
     context_t ctx = make_hangman_context("words.txt", word_length,
             n_misses_for_loss, max_depth);
-    cout << "# loaded context, got " << ctx.words.size() << " words, and " <<
-        ctx.patterns.size() << " patterns." << endl;
+    printf("# loaded context, got %lu words and %lu patterns\n",
+            ctx.words.size(), ctx.patterns.size());
     if (!ctx.words.size()) {
-        cerr << "There are no words there! Aborting." << endl;
+        fprintf(stderr, "There are no words there! Aborting.\n");
         return 1;
     }
     
     // fire up the minimax search
     state_t h_zero = make_initial_state(make_all_word_indices(ctx), word_length);
     cache_t cache;
-    cout << "# searching.." << endl;
+    printf("# searching...\n");
     score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
             ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
-    cout << "@ outcome: " << outcome << endl;
-    DEBUG(cache.dump_summary(cout));
+    printf("@ outcome: %f\n", outcome);
+    IF_DEBUG(debug_printf_cache(cache));
     return 0;
 }
