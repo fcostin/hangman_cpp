@@ -159,7 +159,7 @@ size_t upper_bound_on_remaining_words(
     }
 
     // form set of (max_p lcp[c][p]) for each unused letter c
-    unordered_set<size_t> lc_max_unique;
+    vector<size_t> lc_max_unique;
     for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
         unordered_map<size_t, size_t>::const_iterator j;
         size_t acc = 0;
@@ -167,18 +167,20 @@ size_t upper_bound_on_remaining_words(
             acc = (j->second > acc) ? j->second : acc;
         }
         if (acc > 0) {
-            lc_max_unique.insert(acc);
+            lc_max_unique.push_back(acc);
         }
     }
+
+    // ensure lc_max_unique contains only unique elements and is sorted
+    sort_and_remove_nonunique_elements(lc_max_unique);
+    
     // compute the sum of the n largest elements of lc_max_unique, where
     // n = min_alice_moves = lives - 1. If there are not n largest elements
     // then sum what elements exist and subtract (n - num_elements) from
     // the result. in both cases this yields an upper bound on the maximum
     // number of words remaining (it is probably not particularly tight).
-    vector<size_t> lc_max_sorted(lc_max_unique.begin(), lc_max_unique.end());
-    sort(lc_max_sorted.begin(), lc_max_sorted.end());
 
-    size_t n_unique = lc_max_sorted.size();
+    size_t n_unique = lc_max_unique.size();
     assert(n_unique > 0);
     assert(lives > 0);
     size_t min_alice_moves = lives - 1;
@@ -186,12 +188,12 @@ size_t upper_bound_on_remaining_words(
     size_t upper_bound = 0;
     if (min_alice_moves < n_unique) {
         vector<size_t>::const_iterator k;
-        for (k = (lc_max_sorted.end() - min_alice_moves); k != lc_max_sorted.end(); ++k) {
+        for (k = (lc_max_unique.end() - min_alice_moves); k != lc_max_unique.end(); ++k) {
             upper_bound += *k;
         }
     } else {
         vector<size_t>::const_iterator k;
-        for (k = lc_max_sorted.begin(); k != lc_max_sorted.end(); ++k) {
+        for (k = lc_max_unique.begin(); k != lc_max_unique.end(); ++k) {
             upper_bound += *k;
         }
         size_t defect = min_alice_moves - n_unique;
