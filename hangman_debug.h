@@ -5,8 +5,13 @@
 
 extern int HANGMAN_DEBUG_FLAG;
 
-#define IF_DEBUG(s) do{if(HANGMAN_DEBUG_FLAG) s;} while(0)
+#define HANGMAN_DEBUG_LEVEL_DISABLED 0
+#define HANGMAN_DEBUG_LEVEL_SUMMARY 1
+#define HANGMAN_DEBUG_LEVEL_ALL 2
+
 #define DEBUG_PRINTF(...) \
-            do { if (HANGMAN_DEBUG_FLAG) fprintf(stderr, __VA_ARGS__); } while (0)
+            do { if (HANGMAN_DEBUG_FLAG >= HANGMAN_DEBUG_LEVEL_ALL) fprintf(stderr, __VA_ARGS__); } while (0)
+#define DEBUG_SUMMARY_PRINTF(...) \
+            do { if (HANGMAN_DEBUG_FLAG >= HANGMAN_DEBUG_LEVEL_SUMMARY) fprintf(stderr, __VA_ARGS__); } while (0)
 
 #endif /* HANGMAN_DEBUG_H */

@@ -32,39 +32,39 @@ vector<size_t> make_all_word_indices(const context_t & context) {
 }
 
 void print_usage_and_die() {
-    fprintf(stderr, "usage: [--debug] word_length n_misses_for_loss\n");
+    fprintf(stderr, "usage: [--debug | --debug-summary] word_length n_misses_for_loss\n");
     exit(1);
 }
 
 void debug_printf_vector(const vector<size_t> & v) {
     vector<size_t>::const_reverse_iterator i;
     for(i = v.rbegin(); i != v.rend(); ++i) {
-        DEBUG_PRINTF("%lu", *i);
+        DEBUG_SUMMARY_PRINTF("%lu", *i);
         if (i + 1 != v.rend()) {
-            DEBUG_PRINTF(", ");
+            DEBUG_SUMMARY_PRINTF(",");
         }
     }
-    DEBUG_PRINTF("\n");
+    DEBUG_SUMMARY_PRINTF("\n");
 }
 
 void debug_printf_cache(const cache_t & cache) {
-    DEBUG_PRINTF("-------------\n");
-    DEBUG_PRINTF("Cache summary\n");
-    DEBUG_PRINTF("-------------\n");
-    DEBUG_PRINTF("\tmove_cache size %lu \n", cache.move_cache.size());
-    DEBUG_PRINTF("\tstat_not_terminal ");
+    DEBUG_SUMMARY_PRINTF("-------------\n");
+    DEBUG_SUMMARY_PRINTF("Cache summary\n");
+    DEBUG_SUMMARY_PRINTF("-------------\n");
+    DEBUG_SUMMARY_PRINTF("\tmove_cache size %lu \n", cache.move_cache.size());
+    DEBUG_SUMMARY_PRINTF("\tstat_not_terminal ");
     debug_printf_vector(cache.stat_not_terminal);
-    DEBUG_PRINTF("\tstat_base_loss ");
+    DEBUG_SUMMARY_PRINTF("\tstat_base_loss ");
     debug_printf_vector(cache.stat_base_loss);
-    DEBUG_PRINTF("\tstat_base_win ");
+    DEBUG_SUMMARY_PRINTF("\tstat_base_win ");
     debug_printf_vector(cache.stat_base_win);
-    DEBUG_PRINTF("\tstat_upper_bound_cheap ");
+    DEBUG_SUMMARY_PRINTF("\tstat_upper_bound_cheap ");
     debug_printf_vector(cache.stat_upper_bound_cheap);
-    DEBUG_PRINTF("\tstat_lower_bound_expensive ");
+    DEBUG_SUMMARY_PRINTF("\tstat_lower_bound_expensive ");
     debug_printf_vector(cache.stat_lower_bound_expensive);
+    DEBUG_SUMMARY_PRINTF("\tstat_upper_bound_expensive ");
+    debug_printf_vector(cache.stat_upper_bound_expensive);
 }
-
-
 
 int main(int n_args, char ** args) {
     size_t word_length = 0;
@@ -74,15 +74,19 @@ int main(int n_args, char ** args) {
         print_usage_and_die();
     }
     if (n_args == 3) {
-        HANGMAN_DEBUG_FLAG = 0;
+        HANGMAN_DEBUG_FLAG = HANGMAN_DEBUG_LEVEL_DISABLED;
         stringstream word_length_arg(args[1]);
         stringstream n_misses_for_loss_arg(args[2]);
         word_length_arg >> word_length;
         n_misses_for_loss_arg >> n_misses_for_loss;
-    } else if(strcmp(args[1], "--debug")) {
-        print_usage_and_die();
     } else {
-        HANGMAN_DEBUG_FLAG = 1;
+        if (strcmp(args[1], "--debug") == 0) {
+            HANGMAN_DEBUG_FLAG = HANGMAN_DEBUG_LEVEL_ALL;
+        } else if (strcmp(args[1], "--debug-summary") == 0) {
+            HANGMAN_DEBUG_FLAG = HANGMAN_DEBUG_LEVEL_SUMMARY;
+        } else {
+            print_usage_and_die();
+        }
         stringstream word_length_arg(args[2]);
         stringstream n_misses_for_loss_arg(args[3]);
         word_length_arg >> word_length;
@@ -111,6 +115,6 @@ int main(int n_args, char ** args) {
     score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
             ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
     printf("@ outcome: %f\n", outcome);
-    IF_DEBUG(debug_printf_cache(cache));
+    debug_printf_cache(cache);
     return 0;
 }
