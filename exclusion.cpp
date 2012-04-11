@@ -131,6 +131,7 @@ size_t upper_bound_on_remaining_words(
     // max patterns for that letter over word freq and store the max freq.
     // then pick the d letters with minimal max freq.
     vector<pair<size_t, size_t> > letter_pattern_counts;
+    letter_pattern_counts.reserve(unused_letter_indices.size());
     for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
         // map words to pattern id wrt chosen letter
         for (j = word_indices.begin(); j != word_indices.end(); ++j) {
@@ -155,8 +156,10 @@ size_t upper_bound_on_remaining_words(
     // XXX FIXME Heuristic: Alice chooses the first d letters with the minimal maximal pattern
     // frequencies -- can this be improved without much more compute?
     vector<size_t> letters;
+    size_t n_patterns = (size_t)1;
     for(k = letter_pattern_counts.begin(); k != (letter_pattern_counts.begin() + d); ++k) {
         letters.push_back(k->first);
+        n_patterns *= k->second;
     }
 
     // now we compute what Bob's optimal moves are by mapping each live word to its
