@@ -179,6 +179,10 @@ size_t upper_bound_on_remaining_words(
         fingerprints.push_back(fingerprint);
         fingerprint.clear();
     }
+    // XXX TODO : we can do better here - we dont have to count all the elements and
+    // report the largest count, if any element count is >= 2 we can immediately
+    // return that instead, as that proves that a win for Alice is impossible with
+    // respect to her heuristic strategy.
     vector<pair<vector<size_t>, size_t> > fingerprint_counts = count_elements(fingerprints);
     pair<vector<size_t>, size_t> max_fingerprint = *max_element(
             fingerprint_counts.begin(), fingerprint_counts.end(),

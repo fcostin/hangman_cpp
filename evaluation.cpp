@@ -68,8 +68,8 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
     }
 
     // [UPPER-BOUND-EXPENSIVE]
-    // only try this on Bobs's turn
-    if (h.last_guess != (char)0) {
+    // only try this on Bobs's turn if there aren't too many words left
+    if ((h.last_guess != (char)0) && (h.live_word_indices.size() < 1000)) {
         size_t upper_bound = upper_bound_on_remaining_words(h.live_word_indices,
                 unused_letter_indices, ctx, lives);
         if (upper_bound < 2) {
