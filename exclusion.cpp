@@ -111,34 +111,6 @@ size_t upper_bound_on_remaining_words(
         const vector<size_t> & unused_letter_indices,
         const context_t & ctx,
         const size_t & lives) {
-    /*
-    figure out the subset C of letters that Alice may still guess
-    for each letter c in C:
-        find the c-pattern which occurs the most often in the live words
-        store its frequency f_c
-
-    how to get a (reasonably tight?) upper bound on the number of
-    live words remaining after alice makes d moves?
-
-    when patterns are revealed the subset of words featuring that pattern
-    is intersected onto the set of live words.
-
-    many patterns are mutually exclusive (but we drop that constraint to
-    get an upper bound)
-
-    therefore we can take the min of the d largest frequencies f_c
-
-    actually, we can do better:
-
-    every time alice guesses, she reduces the number of candidate words by at least 1
-    this means we need only look at the unique frequencies f_c and can pick the
-    d-th largest one of those for our upper bound (if there arent d unique values
-    one... then we pick the k-th one, where 1 <= k < d, and subtract (d - k) from it.)
-
-    if this value is less than 2 then Alice wins (since that means either there
-    is only one word left, or that there are 0 words left (ie Alice has demonstrated
-    that Bob is cheating...)
-     */
 
     vector<size_t>::const_iterator i;
     vector<size_t>::const_iterator j;
@@ -149,7 +121,16 @@ size_t upper_bound_on_remaining_words(
     vector<pair<size_t, size_t> > pattern_counts;
     pattern_counts.reserve(unused_letter_indices.size());
 
-    vector<size_t> lc_max_unique;
+    size_t d = lives - 1;
+    // Alice trivially wins if she has as least as many moves as guesses.
+    // We assume we've already checked for that prior to calling
+    // this expensive routine ...
+    assert(d < unused_letter_indices.size());
+
+    // Alice chooses d letters to guess via heuristic: for each letter,
+    // max patterns for that letter over word freq and store the max freq.
+    // then pick the d letters with minimal max freq.
+    vector<pair<size_t, size_t> > letter_pattern_counts;
     for (i = unused_letter_indices.begin(); i != unused_letter_indices.end(); ++i) {
         // map words to pattern id wrt chosen letter
         for (j = word_indices.begin(); j != word_indices.end(); ++j) {
@@ -163,50 +144,41 @@ size_t upper_bound_on_remaining_words(
             acc = (k->second > acc) ? k->second : acc;
         }
         // store it
-        lc_max_unique.push_back(acc);
+        letter_pattern_counts.push_back(make_pair(*i, acc));
         // clean working data stuctures for next letter
         patterns.clear();
         pattern_counts.clear();
     }
+    sort(letter_pattern_counts.begin(), letter_pattern_counts.end(),
+        compare_by_second<pair<size_t, size_t> >);
 
-    // ensure lc_max_unique contains only unique counts, and is sorted
-    sort_and_remove_nonunique_elements(lc_max_unique);
-
-    DEBUG_SUMMARY_PRINTF("debug ****\n");
-
-    DEBUG_SUMMARY_PRINTF("\tlc_max_unique: ");
-    for(i = lc_max_unique.begin(); i != lc_max_unique.end(); ++i) {
-        DEBUG_SUMMARY_PRINTF("%lu, ", *i);
+    // XXX FIXME Heuristic: Alice chooses the first d letters with the minimal maximal pattern
+    // frequencies -- can this be improved without much more compute?
+    vector<size_t> letters;
+    for(k = letter_pattern_counts.begin(); k != (letter_pattern_counts.begin() + d); ++k) {
+        letters.push_back(k->first);
     }
-    DEBUG_SUMMARY_PRINTF("\n");
+
+    // now we compute what Bob's optimal moves are by mapping each live word to its
+    // length-d "fingerprint" of pattern ids wrt the chosen d letters. Then we
+    // count how many occurences there are of each combination of pattern ids and
+    // pick the biggest class. This is the exact number of words remaining wrt Alice's
+    // fixed heuristic strategy. if the number is lower than 2 then Bob loses.
     
-    // compute the sum of the n largest elements of lc_max_unique, where
-    // n = min_alice_moves = lives - 1. If there are not n largest elements
-    // then sum what elements exist and subtract (n - num_elements) from
-    // the result. in both cases this yields an upper bound on the maximum
-    // number of words remaining (it is probably not particularly tight).
-
-    size_t n_unique = lc_max_unique.size();
-    assert(n_unique > 0);
-    assert(lives > 0);
-    size_t min_alice_moves = lives - 1;
-
-    DEBUG_SUMMARY_PRINTF("\tmin_alice_moves %lu\n", min_alice_moves);
-
-    size_t upper_bound = 0;
-    if (min_alice_moves < n_unique) {
-        vector<size_t>::const_iterator k;
-        for (k = (lc_max_unique.end() - min_alice_moves); k != lc_max_unique.end(); ++k) {
-            upper_bound += *k;
+    vector<size_t> fingerprint;
+    fingerprint.reserve(letters.size());
+    vector<vector<size_t> > fingerprints;
+    fingerprints.reserve(word_indices.size());
+    for (j = word_indices.begin(); j != word_indices.end(); ++j) {
+        for (i = letters.begin(); i != letters.end(); ++i) {
+            fingerprint.push_back(ctx.vec_letter_word_to_pattern[*i][*j]);
         }
-    } else {
-        vector<size_t>::const_iterator k;
-        for (k = lc_max_unique.begin(); k != lc_max_unique.end(); ++k) {
-            upper_bound += *k;
-        }
-        size_t defect = min_alice_moves - n_unique;
-        assert(upper_bound >= defect);
-        upper_bound -= defect;
+        fingerprints.push_back(fingerprint);
+        fingerprint.clear();
     }
-    return upper_bound;
+    vector<pair<vector<size_t>, size_t> > fingerprint_counts = count_elements(fingerprints);
+    pair<vector<size_t>, size_t> max_fingerprint = *max_element(
+            fingerprint_counts.begin(), fingerprint_counts.end(),
+            compare_by_second<pair<vector<size_t>, size_t> >);
+    return max_fingerprint.second;
 }

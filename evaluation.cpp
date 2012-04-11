@@ -28,9 +28,16 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
         return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
     }
 
-    // needed for following two estimates
+    // needed for following three estimates
     vector<size_t> unused_letter_indices = make_unused_letter_indices(
             ctx.letter_table, ctx.words.size(), h.guesses, h.live_word_indices);
+
+    // [UPPER-BOUND-CHEAP part ii]: if there are less letters to guess
+    // than Alice's lives, then Alice can win just be guessing all those
+    // letters in some arbitrary order regardless of what Bob does.
+    if (unused_letter_indices.size() <= lives - 1) {
+        return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
+    }
 
     // only compute the expensive lower bound if a random forest classifier
     // predicts that it will succeed.
@@ -59,8 +66,6 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
     // [UPPER-BOUND-EXPENSIVE]
     size_t upper_bound = upper_bound_on_remaining_words(h.live_word_indices,
             unused_letter_indices, ctx, lives);
-    DEBUG_SUMMARY_PRINTF("debug upper_bound %lu vs |words| %lu\n", upper_bound,
-            h.live_word_indices.size());
     if (upper_bound < 2) {
         DEBUG_PRINTF("$TERM upper_bound_expensive\n");
         return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);

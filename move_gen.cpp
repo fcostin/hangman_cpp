@@ -1,10 +1,5 @@
 #include "move_gen.h"
 
-template <typename T>
-bool compare_by_second(const T & a, const T & b) {
-    return (a.second < b.second);
-}
-
 vector<pair<size_t, size_t> > make_pattern_counts(const context_t & ctx,
         const vector<size_t> & word_indices, const size_t & c_index) {
 

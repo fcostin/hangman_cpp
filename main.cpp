@@ -1,6 +1,7 @@
-#include "stdlib.h"
-#include "string.h"
-#include "stdio.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <signal.h>
 
 #include "hangman_types.h"
 #include "hangman_constants.h"
@@ -66,6 +67,11 @@ void debug_printf_cache(const cache_t & cache) {
     debug_printf_vector(cache.stat_upper_bound_expensive);
 }
 
+void hangman_sa_handler(int s) {
+    fprintf(stderr, "Caught signal %d\n", s);
+    exit(1);
+}
+
 int main(int n_args, char ** args) {
     size_t word_length = 0;
     size_t n_misses_for_loss = 0;
@@ -95,6 +101,14 @@ int main(int n_args, char ** args) {
 
     printf("# got word_length = %lu\n", word_length);
     printf("# got n_misses_for_loss = %lu\n", n_misses_for_loss);
+
+    // set up signal handling before we try doing anything that will
+    // take a long time ...
+    struct sigaction sig_interrupt_handler;
+    sig_interrupt_handler.sa_handler = hangman_sa_handler;
+    sigemptyset(&sig_interrupt_handler.sa_mask);
+    sig_interrupt_handler.sa_flags = 0;
+    sigaction(SIGINT, &sig_interrupt_handler, NULL);
 
     // set up context (dictionary of words and derived constant structures)
     size_t max_depth = 2 * ALPHABET.size(); // full search

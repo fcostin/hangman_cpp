@@ -11,6 +11,7 @@
 #include "hangman_types.h"
 #include "hangman_algorithm.h"
 #include "hangman_debug.h"
+#include "move_gen.h"
 
 using namespace std;
 
