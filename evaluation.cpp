@@ -28,6 +28,7 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
         return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
     }
 
+
     // needed for following three estimates
     vector<size_t> unused_letter_indices = make_unused_letter_indices(
             ctx.letter_table, ctx.words.size(), h.guesses, h.live_word_indices);
@@ -39,36 +40,42 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
         return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
     }
 
-    // only compute the expensive lower bound if a random forest classifier
-    // predicts that it will succeed.
-    size_t forest_clf_inputs[6];
-    forest_clf_inputs[0] = n_words;
-    forest_clf_inputs[1] = lives;
-    forest_clf_inputs[2] = h.guesses.size();
-    forest_clf_inputs[3] = unused_letter_indices.size();
-    forest_clf_inputs[4] = ctx.word_length;
-    forest_clf_inputs[5] = ctx.n_misses_for_loss;
-    if (forest_clf(forest_clf_inputs)) {
-        // [LOWER-BOUND-EXPENSIVE]: compute lower bound on the number of
-        // possible words left if the foe claims no subsequent guessed
-        // letters are in the unknown word (this is able to a detect
-        // guesser loss scenario early in some circumstances)
-        DEBUG_PRINTF("$TERM forest_clf_check\n");
-        size_t lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
-                ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
+    // only try on Alice's turn
+    if (h.last_guess == (char)0) {
+        // only compute the expensive lower bound if a random forest classifier
+        // predicts that it will succeed.
+        size_t forest_clf_inputs[6];
+        forest_clf_inputs[0] = n_words;
+        forest_clf_inputs[1] = lives;
+        forest_clf_inputs[2] = h.guesses.size();
+        forest_clf_inputs[3] = unused_letter_indices.size();
+        forest_clf_inputs[4] = ctx.word_length;
+        forest_clf_inputs[5] = ctx.n_misses_for_loss;
+        if (forest_clf(forest_clf_inputs)) {
+            // [LOWER-BOUND-EXPENSIVE]: compute lower bound on the number of
+            // possible words left if the foe claims no subsequent guessed
+            // letters are in the unknown word (this is able to a detect
+            // guesser loss scenario early in some circumstances)
+            DEBUG_PRINTF("$TERM forest_clf_check\n");
+            size_t lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
+                    ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
 
-        if (lower_bound > 1) {
-            DEBUG_PRINTF("$TERM lower_bound\n");
-            return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
+            if (lower_bound > 1) {
+                DEBUG_PRINTF("$TERM lower_bound\n");
+                return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
+            }
         }
     }
 
     // [UPPER-BOUND-EXPENSIVE]
-    size_t upper_bound = upper_bound_on_remaining_words(h.live_word_indices,
-            unused_letter_indices, ctx, lives);
-    if (upper_bound < 2) {
-        DEBUG_PRINTF("$TERM upper_bound_expensive\n");
-        return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);
+    // only try this on Bobs's turn
+    if (h.last_guess != (char)0) {
+        size_t upper_bound = upper_bound_on_remaining_words(h.live_word_indices,
+                unused_letter_indices, ctx, lives);
+        if (upper_bound < 2) {
+            DEBUG_PRINTF("$TERM upper_bound_expensive\n");
+            return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);
+        }
     }
 
     // [NOT-TERMINAL] we haven't detected a terminal game state
