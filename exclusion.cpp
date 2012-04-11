@@ -171,6 +171,14 @@ size_t upper_bound_on_remaining_words(
 
     // ensure lc_max_unique contains only unique counts, and is sorted
     sort_and_remove_nonunique_elements(lc_max_unique);
+
+    DEBUG_SUMMARY_PRINTF("debug ****\n");
+
+    DEBUG_SUMMARY_PRINTF("\tlc_max_unique: ");
+    for(i = lc_max_unique.begin(); i != lc_max_unique.end(); ++i) {
+        DEBUG_SUMMARY_PRINTF("%lu, ", *i);
+    }
+    DEBUG_SUMMARY_PRINTF("\n");
     
     // compute the sum of the n largest elements of lc_max_unique, where
     // n = min_alice_moves = lives - 1. If there are not n largest elements
@@ -182,6 +190,8 @@ size_t upper_bound_on_remaining_words(
     assert(n_unique > 0);
     assert(lives > 0);
     size_t min_alice_moves = lives - 1;
+
+    DEBUG_SUMMARY_PRINTF("\tmin_alice_moves %lu\n", min_alice_moves);
 
     size_t upper_bound = 0;
     if (min_alice_moves < n_unique) {

@@ -24,7 +24,7 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
     // words is less than 2)
     size_t lives = ctx.n_misses_for_loss - h.n_misses;
     if (h.live_word_indices.size() <= lives) {
-        DEBUG_PRINTF("$TERM upper_bound\n");
+        DEBUG_PRINTF("$TERM upper_bound_cheap\n");
         return make_pair(EVAL_RESULT_UPPER_BOUND_CHEAP, SCORE_GUESSER_WIN);
     }
 
@@ -49,10 +49,21 @@ pair<eval_result_t, score_t> terminal_game_state(const context_t & ctx, const st
         DEBUG_PRINTF("$TERM forest_clf_check\n");
         size_t lower_bound = lower_bound_on_remaining_words(ctx.letter_table,
                 ctx.words.size(), h.live_word_indices, unused_letter_indices, lives);
+
         if (lower_bound > 1) {
             DEBUG_PRINTF("$TERM lower_bound\n");
             return make_pair(EVAL_RESULT_LOWER_BOUND_EXPENSIVE, SCORE_GUESSER_LOSE);
         }
+    }
+
+    // [UPPER-BOUND-EXPENSIVE]
+    size_t upper_bound = upper_bound_on_remaining_words(h.live_word_indices,
+            unused_letter_indices, ctx, lives);
+    DEBUG_SUMMARY_PRINTF("debug upper_bound %lu vs |words| %lu\n", upper_bound,
+            h.live_word_indices.size());
+    if (upper_bound < 2) {
+        DEBUG_PRINTF("$TERM upper_bound_expensive\n");
+        return make_pair(EVAL_RESULT_UPPER_BOUND_EXPENSIVE, SCORE_GUESSER_WIN);
     }
 
     // [NOT-TERMINAL] we haven't detected a terminal game state

@@ -10,6 +10,7 @@
 #include "hangman_constants.h"
 #include "hangman_types.h"
 #include "hangman_algorithm.h"
+#include "hangman_debug.h"
 
 using namespace std;
 
