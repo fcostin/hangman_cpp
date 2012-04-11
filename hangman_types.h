@@ -63,6 +63,9 @@ enum eval_result_t {
 struct cache_t {
     lru_cache_t<string, score_t> move_cache;
 
+    vector<size_t> stat_evaluated_move_loss;
+    vector<size_t> stat_evaluated_move_win;
+
     vector<size_t> stat_not_terminal;
     vector<size_t> stat_base_loss;
     vector<size_t> stat_base_win;
@@ -71,6 +74,8 @@ struct cache_t {
     vector<size_t> stat_upper_bound_expensive;
         
     cache_t() : move_cache(MOVE_CACHE_SIZE) {
+        stat_evaluated_move_loss.resize(1 + (ALPHABET_SIZE * 2), 0);
+        stat_evaluated_move_win.resize(1 + (ALPHABET_SIZE * 2), 0);
         stat_not_terminal.resize(1 + (ALPHABET_SIZE * 2), 0);
         stat_base_loss.resize(1 + (ALPHABET_SIZE * 2), 0);
         stat_base_win.resize(1 + (ALPHABET_SIZE * 2), 0);
@@ -79,7 +84,16 @@ struct cache_t {
         stat_upper_bound_expensive.resize(1 + (ALPHABET_SIZE * 2), 0);
     }
 
-    inline void log_eval_result(const eval_result_t & er, const size_t & depth) {
+    inline void log_evaluation_result(const score_t & outcome, const size_t & depth) {
+        assert(depth <= (ALPHABET_SIZE * 2));
+        if (outcome == SCORE_GUESSER_LOSE) {
+            stat_evaluated_move_loss[depth] += 1;
+        } else if (outcome == SCORE_GUESSER_WIN) {
+            stat_evaluated_move_win[depth] += 1;
+        }
+    }
+
+    inline void log_terminal_result(const eval_result_t & er, const size_t & depth) {
         assert(depth <= (ALPHABET_SIZE * 2));
         switch(er) {
             case EVAL_RESULT_NOT_TERMINAL:

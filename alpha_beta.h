@@ -26,9 +26,9 @@ state_t apply_foe_move(const context_t & ctx, const state_t & h,
         const size_t & m);
 
 score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        size_t depth, score_t alpha, score_t beta);
+        size_t depth, score_t alpha, score_t beta, bool *abort_flag);
 
 score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        size_t depth, score_t alpha, score_t beta);
+        size_t depth, score_t alpha, score_t beta, bool *abort_flag);
 
 #endif /* ALPHA_BETA_H */

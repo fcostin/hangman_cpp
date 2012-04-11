@@ -19,7 +19,11 @@ inline string make_key_for_game_state(const state_t & h) {
 }
 
 score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        size_t depth, score_t alpha, score_t beta) {
+        size_t depth, score_t alpha, score_t beta, bool *abort_flag) {
+
+    if (*abort_flag) {
+        return SCORE_WHATEVER;
+    }
     
     // check if we've already got the answer in the cache
     string h_key = make_key_for_game_state(h);
@@ -33,7 +37,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
     score_t node_score;
 
     pair<eval_result_t, score_t> term = terminal_game_state(ctx, h);
-    cache.log_eval_result(term.first, depth);
+    cache.log_terminal_result(term.first, depth);
     if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
@@ -42,7 +46,7 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
         for (i = moves.begin(); i != moves.end(); i++) {
             state_t next_h = apply_guesser_move(ctx, h, *i);
             score_t score = optimal_foe_score(ctx, cache, next_h, depth - 1,
-                    alpha, beta);
+                    alpha, beta, abort_flag);
             alpha = (score > alpha) ? score : alpha;
             if (beta <= alpha) {
                 break;
@@ -53,19 +57,25 @@ score_t optimal_guesser_score(const context_t & ctx, cache_t & cache, const stat
 
     // stash the answer in the cache
     cache.move_cache.insert(h_key, node_score);
+    // logging ...
     DEBUG_PRINTF("$CACHE STORE %s %f\n", h_key.c_str(), node_score);
+    cache.log_evaluation_result(node_score, depth);
     return node_score;
 }
 
 score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t & h,
-        size_t depth, score_t alpha, score_t beta) {
+        size_t depth, score_t alpha, score_t beta, bool *abort_flag) {
+
+    if (*abort_flag) {
+        return SCORE_WHATEVER;
+    }
     
     string h_key = make_key_for_game_state(h);
 
     score_t node_score;
 
     pair<eval_result_t, score_t> term = terminal_game_state(ctx, h);
-    cache.log_eval_result(term.first, depth);
+    cache.log_terminal_result(term.first, depth);
     if (term.first != EVAL_RESULT_NOT_TERMINAL) {
         node_score = term.second;
     } else {
@@ -74,7 +84,7 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         for (i = moves.begin(); i != moves.end(); i++) {
             state_t next_h = apply_foe_move(ctx, h, *i);
             score_t score = optimal_guesser_score(ctx, cache, next_h,
-                    depth - 1, alpha, beta);
+                    depth - 1, alpha, beta, abort_flag);
             beta = (score < beta) ? score : beta;
             if (beta <= alpha) {
                 break;
@@ -82,6 +92,8 @@ score_t optimal_foe_score(const context_t & ctx, cache_t & cache, const state_t 
         }
         node_score = beta;
     }
+
+    cache.log_evaluation_result(node_score, depth);
     
     return node_score;
 }

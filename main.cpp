@@ -53,6 +53,12 @@ void debug_printf_cache(const cache_t & cache) {
     DEBUG_SUMMARY_PRINTF("Cache summary\n");
     DEBUG_SUMMARY_PRINTF("-------------\n");
     DEBUG_SUMMARY_PRINTF("\tmove_cache size %lu \n", cache.move_cache.size());
+    DEBUG_SUMMARY_PRINTF("\n");
+    DEBUG_SUMMARY_PRINTF("\tstat_evaluated_move_loss ");
+    debug_printf_vector(cache.stat_evaluated_move_loss);
+    DEBUG_SUMMARY_PRINTF("\tstat_evaluated_move_win ");
+    debug_printf_vector(cache.stat_evaluated_move_win);
+    DEBUG_SUMMARY_PRINTF("\n");
     DEBUG_SUMMARY_PRINTF("\tstat_not_terminal ");
     debug_printf_vector(cache.stat_not_terminal);
     DEBUG_SUMMARY_PRINTF("\tstat_base_loss ");
@@ -67,9 +73,11 @@ void debug_printf_cache(const cache_t & cache) {
     debug_printf_vector(cache.stat_upper_bound_expensive);
 }
 
+bool abort_flag;
+
 void hangman_sa_handler(int s) {
-    fprintf(stderr, "Caught signal %d\n", s);
-    exit(1);
+    fprintf(stderr, "\nCaught signal %d, aborting search...\n", s);
+    abort_flag = true;
 }
 
 int main(int n_args, char ** args) {
@@ -102,8 +110,12 @@ int main(int n_args, char ** args) {
     printf("# got word_length = %lu\n", word_length);
     printf("# got n_misses_for_loss = %lu\n", n_misses_for_loss);
 
-    // set up signal handling before we try doing anything that will
-    // take a long time ...
+    // Set up signal handling before we try doing anything that will
+    // take a long time. We want to intercept any SIGINT and then
+    // set abort_flag to true to let the search terminate in a
+    // controlled fashion, so we can still print summary information
+    // and write a decent profile.
+    abort_flag = false;
     struct sigaction sig_interrupt_handler;
     sig_interrupt_handler.sa_handler = hangman_sa_handler;
     sigemptyset(&sig_interrupt_handler.sa_mask);
@@ -127,8 +139,12 @@ int main(int n_args, char ** args) {
     cache_t cache;
     printf("# searching...\n");
     score_t outcome = optimal_guesser_score(ctx, cache, h_zero,
-            ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN);
-    printf("@ outcome: %f\n", outcome);
+            ctx.max_depth, SCORE_GUESSER_LOSE, SCORE_GUESSER_WIN, &abort_flag);
+    if (abort_flag) {
+        fprintf(stderr, "search aborted by user, game outcome unknown.\n");
+    } else  {
+        printf("@ outcome: %f\n", outcome);
+    }
     debug_printf_cache(cache);
     return 0;
 }
